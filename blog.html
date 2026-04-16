@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Minh-Hieu Nguyen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --gold: #b8860b;
+  --sage: #4a6741;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION (giống index.html) ─── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+
+nav.scrolled {
+  box-shadow: 0 2px 20px var(--shadow);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.25s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  transition: 0.3s;
+}
+
+/* ─── BLOG HERO ─── */
+.blog-hero {
+  padding: 140px 40px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -15%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139,37,0,0.03) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.blog-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.blog-hero .section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.blog-hero .section-label::before {
+  content: '';
+  width: 32px;
+  height: 1.5px;
+  background: var(--accent);
+}
+
+.blog-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.blog-hero p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  max-width: 600px;
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+.blog-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.blog-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.blog-stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.blog-stat-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ─── FILTER TABS ─── */
+.blog-filters {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px 40px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.blog-filter-btn {
+  padding: 8px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.blog-filter-btn.active,
+.blog-filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(139,37,0,0.04);
+}
+
+/* ─── BLOG LIST ─── */
+.blog-list {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.blog-post {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
+  align-items: start;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s;
+}
+
+.blog-post:first-child {
+  padding-top: 0;
+}
+
+.blog-post:hover {
+  background: rgba(243,240,232,0.4);
+  margin: 0 -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: 12px;
+}
+
+.blog-post:hover .blog-post-title {
+  color: var(--accent);
+}
+
+.blog-post:hover .blog-post-thumb {
+  transform: scale(1.02);
+  box-shadow: 0 8px 32px var(--shadow);
+}
+
+/* Thumbnail */
+.blog-post-thumb {
+  height: 180px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.35s;
+}
+
+.blog-post-thumb-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  background-image: 
+    radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
+    radial-gradient(circle at 80% 30%, white 1px, transparent 1px),
+    radial-gradient(circle at 50% 80%, white 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.thumb-brown { background: linear-gradient(135deg, #2d1810 0%, #5c2e1e 50%, #8b4513 100%); }
+.thumb-green { background: linear-gradient(135deg, #1a2e1a 0%, #2d4a2d 50%, #4a6741 100%); }
+.thumb-blue  { background: linear-gradient(135deg, #1a1a2e 0%, #2e2e5c 50%, #4a4a8b 100%); }
+.thumb-teal  { background: linear-gradient(135deg, #0d2e2e 0%, #1a5c5c 50%, #2a8b8b 100%); }
+.thumb-gold  { background: linear-gradient(135deg, #2e2410 0%, #5c4a1e 50%, #8b7513 100%); }
+.thumb-plum  { background: linear-gradient(135deg, #2e1a2e 0%, #5c2e5c 50%, #8b4a8b 100%); }
+
+.blog-post-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Content */
+.blog-post-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 180px;
+}
+
+.blog-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.blog-post-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.blog-post-reading {
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.blog-post-reading::before {
+  content: '·';
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.blog-post-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 12px;
+  transition: color 0.25s;
+}
+
+.blog-post-excerpt {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.blog-post-readmore {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blog-post-readmore svg {
+  transition: transform 0.25s;
+}
+
+.blog-post:hover .blog-post-readmore svg {
+  transform: translateX(4px);
+}
+
+/* ─── EMPTY STATE ─── */
+.blog-empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--muted);
+}
+
+.blog-empty p {
+  font-size: 1.05rem;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light);
+  color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* ─── ANIMATIONS ─── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blog-post { opacity: 0; transform: translateY(20px); animation: fadeUp 0.5s ease forwards; }
+.blog-post:nth-child(1) { animation-delay: 0.1s; }
+.blog-post:nth-child(2) { animation-delay: 0.18s; }
+.blog-post:nth-child(3) { animation-delay: 0.26s; }
+.blog-post:nth-child(4) { animation-delay: 0.34s; }
+.blog-post:nth-child(5) { animation-delay: 0.42s; }
+.blog-post:nth-child(6) { animation-delay: 0.50s; }
+.blog-post:nth-child(7) { animation-delay: 0.58s; }
+.blog-post:nth-child(8) { animation-delay: 0.66s; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .blog-hero h1 { font-size: 2.4rem; }
+  .blog-post {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .blog-post-content { min-height: auto; }
+  .blog-post-thumb { height: 200px; }
+}
+
+@media (max-width: 640px) {
+  .blog-hero { padding: 100px 20px 40px; }
+  .blog-filters { padding: 0 20px 32px; }
+  .blog-list { padding: 0 20px 60px; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  
+  nav.menu-open .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .blog-hero h1 { font-size: 2rem; }
+  .blog-stats { gap: 20px; }
+  .blog-stat-number { font-size: 1.6rem; }
+  .blog-post-thumb { height: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── BLOG HERO ─── -->
+<section class="blog-hero">
+  <div class="blog-hero-inner fade-in">
+    <div class="section-label">Blog &amp; Research Notes</div>
+    <h1>Thoughts on Physics,<br>Materials &amp; Beyond</h1>
+    <p>
+      Sharing research insights, tutorials, and reflections on condensed matter physics, 
+      magnetocaloric materials, and the journey of scientific discovery.
+    </p>
+    <div class="blog-stats">
+      <div class="blog-stat">
+        <span class="blog-stat-number" id="postCount">5</span>
+        <span class="blog-stat-label">Posts</span>
+      </div>
+      <div class="blog-stat">
+        <span class="blog-stat-number">4</span>
+        <span class="blog-stat-label">Topics</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FILTER ─── -->
+<div class="blog-filters">
+  <button class="blog-filter-btn active" onclick="filterBlog('all', this)">All Posts</button>
+  <button class="blog-filter-btn" onclick="filterBlog('tutorial', this)">Tutorial</button>
+  <button class="blog-filter-btn" onclick="filterBlog('research', this)">Research</button>
+  <button class="blog-filter-btn" onclick="filterBlog('opinion', this)">Opinion</button>
+  <button class="blog-filter-btn" onclick="filterBlog('personal', this)">Personal</button>
+</div>
+
+<!-- ─── BLOG LIST ─── -->
+<div class="blog-list" id="blogList">
+
+  <!-- ═══ NEW: Burnout post ═══ -->
+  <a href="posts/your-body-has-been-screaming.html" class="blog-post" data-category="personal">
+    <div class="blog-post-thumb thumb-plum">
+      <div class="blog-post-thumb-pattern"></div>
+      <span class="blog-post-tag">Personal</span>
+    </div>
+    <div class="blog-post-content">
+      <div class="blog-post-meta">
+        <span class="blog-post-date">April 2026</span>
+        <span class="blog-post-reading">6 min read</span>
+      </div>
+      <h2 class="blog-post-title">Your Body Has Been Screaming. But Are You Listening?</h2>
+      <p class="blog-post-excerpt">
+        A raw, personal reflection on burnout, the illusion of productivity, and the moment 
+        I realized no success is worth it if you're no longer healthy enough to enjoy it. 
+        This isn't about slowing down — it's about survival.
+      </p>
+      <span class="blog-post-readmore">
+        Read full post
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </div>
+  </a>
+
+  <!-- ═══ POST 1 ═══ -->
+  <a href="#" class="blog-post" data-category="tutorial">
+    <div class="blog-post-thumb thumb-brown">
+      <div class="blog-post-thumb-pattern"></div>
+      <span class="blog-post-tag">Tutorial</span>
+    </div>
+    <div class="blog-post-content">
+      <div class="blog-post-meta">
+        <span class="blog-post-date">March 2026</span>
+        <span class="blog-post-reading">5 min read</span>
+      </div>
+      <h2 class="blog-post-title">Understanding Arrott Plots: A Practical Guide for Experimentalists</h2>
+      <p class="blog-post-excerpt">
+        A step-by-step walkthrough of modified Arrott plots for determining the order of 
+        magnetic phase transitions and extracting critical exponents. Includes worked examples 
+        from real manganite data and common pitfalls to avoid.
+      </p>
+      <span class="blog-post-readmore">
+        Read full post
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </div>
+  </a>
+
+  <!-- ═══ POST 2 ═══ -->
+  <a href="#" class="blog-post" data-category="research">
+    <div class="blog-post-thumb thumb-green">
+      <div class="blog-post-thumb-pattern"></div>
+      <span class="blog-post-tag">Research</span>
+    </div>
+    <div class="blog-post-content">
+      <div class="blog-post-meta">
+        <span class="blog-post-date">January 2026</span>
+        <span class="blog-post-reading">7 min read</span>
+      </div>
+      <h2 class="blog-post-title">Why Nano-sized Manganites Behave Differently: Surface Effects and Magnetic Ordering</h2>
+      <p class="blog-post-excerpt">
+        Exploring how reducing particle size to the nanoscale changes the fundamental magnetic 
+        behavior of perovskite manganites. From dead magnetic layers to core-shell models — 
+        what the latest research tells us about finite-size effects.
+      </p>
+      <span class="blog-post-readmore">
+        Read full post
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </div>
+  </a>
+
+  <!-- ═══ POST 3 ═══ -->
+  <a href="#" class="blog-post" data-category="opinion">
+    <div class="blog-post-thumb thumb-blue">
+      <div class="blog-post-thumb-pattern"></div>
+      <span class="blog-post-tag">Opinion</span>
+    </div>
+    <div class="blog-post-content">
+      <div class="blog-post-meta">
+        <span class="blog-post-date">November 2025</span>
+        <span class="blog-post-reading">6 min read</span>
+      </div>
+      <h2 class="blog-post-title">The Future of Magnetic Refrigeration: Are We Close to a Breakthrough?</h2>
+      <p class="blog-post-excerpt">
+        Reflections on the current state of magnetocaloric research and the remaining challenges 
+        before practical magnetic cooling becomes a reality. A look at where the field stands 
+        and what breakthroughs are still needed.
+      </p>
+      <span class="blog-post-readmore">
+        Read full post
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </div>
+  </a>
+
+  <!-- ═══ POST 4 ═══ -->
+  <a href="#" class="blog-post" data-category="tutorial">
+    <div class="blog-post-thumb thumb-teal">
+      <div class="blog-post-thumb-pattern"></div>
+      <span class="blog-post-tag">Tutorial</span>
+    </div>
+    <div class="blog-post-content">
+      <div class="blog-post-meta">
+        <span class="blog-post-date">September 2025</span>
+        <span class="blog-post-reading">8 min read</span>
+      </div>
+      <h2 class="blog-post-title">Calculating Magnetic Entropy Change with Python: From Raw M(H) Data to ΔS<sub>M</sub> Curves</h2>
+      <p class="blog-post-excerpt">
+        A practical coding tutorial showing how to process isothermal magnetization data 
+        and calculate the magnetic entropy change using Maxwell's relation. Complete with 
+        Python code, visualization tips, and error analysis.
+      </p>
+      <span class="blog-post-readmore">
+        Read full post
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </div>
+  </a>
+
+  <!--
+  ══════════════════════════════════════════════════
+   HƯỚNG DẪN THÊM BÀI BLOG MỚI
+  ══════════════════════════════════════════════════
+  
+  Copy block bên dưới, paste VÀO ĐẦU danh sách (ngay sau <div class="blog-list">),
+  rồi sửa 6 chỗ được đánh dấu [SỬA]:
+
+  <a href="#" class="blog-post" data-category="[SỬA: tutorial / research / opinion]">
+    <div class="blog-post-thumb [SỬA: thumb-brown / thumb-green / thumb-blue / thumb-teal / thumb-gold / thumb-plum]">
+      <div class="blog-post-thumb-pattern"></div>
+      <span class="blog-post-tag">[SỬA: Thể loại]</span>
+    </div>
+    <div class="blog-post-content">
+      <div class="blog-post-meta">
+        <span class="blog-post-date">[SỬA: Tháng Năm]</span>
+        <span class="blog-post-reading">[SỬA: X min read]</span>
+      </div>
+      <h2 class="blog-post-title">[SỬA: Tiêu đề bài viết]</h2>
+      <p class="blog-post-excerpt">[SỬA: Mô tả ngắn 2-3 câu]</p>
+      <span class="blog-post-readmore">
+        Read full post
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </div>
+  </a>
+
+  Sau khi thêm, nhớ cập nhật số "postCount" ở phần blog-stats phía trên.
+  ══════════════════════════════════════════════════
+  -->
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: April 2026</p>
+  </div>
+</footer>
+
+<script>
+// ─── Navbar scroll
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ─── Hamburger menu
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+
+// ─── Blog filter
+function filterBlog(category, btn) {
+  // Update active button
+  document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Filter posts
+  const posts = document.querySelectorAll('.blog-post');
+  let visibleCount = 0;
+
+  posts.forEach((post, i) => {
+    if (category === 'all' || post.dataset.category === category) {
+      post.style.display = 'grid';
+      post.style.animation = 'none';
+      post.offsetHeight; // trigger reflow
+      post.style.animation = `fadeUp 0.5s ease forwards ${i * 0.08}s`;
+      visibleCount++;
+    } else {
+      post.style.display = 'none';
+    }
+  });
+
+  // Update post count
+  document.getElementById('postCount').textContent = visibleCount;
+}
+</script>
+</body>
+</html>

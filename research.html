@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research — Minh-Hieu Nguyen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --gold: #b8860b;
+  --sage: #4a6741;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+
+nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.25s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none; border: none;
+  padding: 4px;
+}
+
+.hamburger span { width: 24px; height: 2px; background: var(--ink); }
+
+/* ─── PAGE HERO ─── */
+.page-hero {
+  padding: 140px 40px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%; right: -15%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(139,37,0,0.03) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.page-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before {
+  content: '';
+  width: 32px; height: 1.5px;
+  background: var(--accent);
+}
+
+.page-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.page-hero p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  max-width: 720px;
+  line-height: 1.8;
+}
+
+/* ─── RESEARCH CONTENT ─── */
+.research-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+/* Featured/Large Research Card */
+.research-featured {
+  background: white;
+  border-radius: 16px;
+  padding: 48px;
+  border: 1px solid var(--border);
+  margin-bottom: 60px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.research-featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 6px; height: 100%;
+  background: linear-gradient(to bottom, var(--accent), var(--accent-light));
+}
+
+.research-featured-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--accent);
+  color: white;
+  margin-bottom: 20px;
+}
+
+.research-featured h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.research-featured p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  margin-bottom: 24px;
+}
+
+.research-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.research-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: var(--cream);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+/* Section heading */
+.research-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  letter-spacing: -0.01em;
+}
+
+/* Research Grid */
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+  margin-bottom: 60px;
+}
+
+.research-card {
+  background: white;
+  border-radius: 12px;
+  padding: 36px;
+  border: 1px solid var(--border);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.research-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 0;
+  background: var(--accent);
+  transition: height 0.35s ease;
+}
+
+.research-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--shadow);
+  border-color: transparent;
+}
+
+.research-card:hover::before { height: 100%; }
+
+.research-icon {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+.research-card:nth-child(3n+1) .research-icon { background: rgba(139,37,0,0.08); color: var(--accent); }
+.research-card:nth-child(3n+2) .research-icon { background: rgba(74,103,65,0.1); color: var(--sage); }
+.research-card:nth-child(3n+3) .research-icon { background: rgba(184,134,11,0.1); color: var(--gold); }
+
+.research-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.research-card p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.research-status {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.status-active { background: rgba(74,103,65,0.1); color: var(--sage); }
+.status-ongoing { background: rgba(184,134,11,0.1); color: var(--gold); }
+.status-completed { background: rgba(107,107,123,0.1); color: var(--muted); }
+
+/* Methods Section */
+.methods-section {
+  background: var(--cream);
+  border-radius: 16px;
+  padding: 48px;
+  margin-bottom: 60px;
+}
+
+.methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
+  margin-top: 28px;
+}
+
+.method-item {
+  padding-left: 20px;
+  border-left: 2px solid var(--accent);
+}
+
+.method-item h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.method-item p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+/* Collaborations */
+.collab-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.collab-item {
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: all 0.25s;
+}
+
+.collab-item:hover {
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+
+.collab-item h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.collab-item .collab-org {
+  font-size: 0.88rem;
+  color: var(--sage);
+  font-weight: 600;
+}
+
+.collab-item p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.7;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light);
+  color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p { font-size: 0.85rem; line-height: 1.6; }
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.research-card {
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.5s ease forwards;
+}
+.research-card:nth-child(1) { animation-delay: 0.1s; }
+.research-card:nth-child(2) { animation-delay: 0.18s; }
+.research-card:nth-child(3) { animation-delay: 0.26s; }
+.research-card:nth-child(4) { animation-delay: 0.34s; }
+.research-card:nth-child(5) { animation-delay: 0.42s; }
+.research-card:nth-child(6) { animation-delay: 0.50s; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .page-hero h1 { font-size: 2.4rem; }
+  .research-featured { padding: 32px; }
+  .research-featured h2 { font-size: 1.7rem; }
+  .methods-section { padding: 32px; }
+}
+
+@media (max-width: 640px) {
+  .page-hero { padding: 100px 20px 40px; }
+  .research-content { padding: 32px 20px 60px; }
+  .page-hero h1 { font-size: 2rem; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  nav.menu-open .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .research-featured { padding: 24px; }
+  .methods-section { padding: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="research.html" class="active">Research</a></li>
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="page-hero">
+  <div class="page-hero-inner fade-in">
+    <div class="section-label">Research</div>
+    <h1>Bridging Fundamental Physics<br>with Real-World Applications</h1>
+    <p>
+      My research sits at the intersection of condensed matter physics, computational materials science, 
+      and nanotechnology. From magnetocaloric effects in manganite perovskites to first-principles 
+      modeling of 2D materials for energy storage — here's a deeper look at what I work on.
+    </p>
+  </div>
+</section>
+
+<!-- ─── RESEARCH CONTENT ─── -->
+<main class="research-content">
+
+  <!-- FEATURED RESEARCH -->
+  <div class="research-featured fade-in">
+    <span class="research-featured-badge">Flagship Research</span>
+    <h2>Magnetocaloric Effect &amp; Tricritical Behavior in Nd<sub>0.7</sub>Sr<sub>0.3</sub>MnO<sub>3</sub> Nanoparticles</h2>
+    <p>
+      This is the core of my current research. I investigate how nano-scale confinement fundamentally 
+      alters the magnetocaloric response and critical behavior in rare-earth manganites. Using a combination 
+      of Maxwell's thermodynamic relations, modified Arrott plot analysis, and scaling theory, I aim to 
+      characterize the order of magnetic phase transitions and quantify the magnetic entropy change 
+      (ΔS<sub>M</sub>) and relative cooling power (RCP).
+    </p>
+    <p>
+      The findings have direct implications for the development of magnetic refrigeration — a promising 
+      green alternative to conventional vapor-compression cooling. The tricritical behavior observed 
+      in these systems bridges first-order and second-order transitions, offering new insights into 
+      how to engineer materials with enhanced cooling performance.
+    </p>
+    <div class="research-tags">
+      <span class="research-tag">Magnetocaloric Effect</span>
+      <span class="research-tag">Tricritical Point</span>
+      <span class="research-tag">Arrott Plots</span>
+      <span class="research-tag">Manganite Perovskites</span>
+      <span class="research-tag">Magnetic Refrigeration</span>
+    </div>
+  </div>
+
+  <!-- ─── RESEARCH AREAS ─── -->
+  <h2 class="research-section-title fade-in">Active Research Areas</h2>
+  <div class="research-grid">
+
+    <div class="research-card">
+      <div class="research-icon">⚛</div>
+      <h3>Magnetocaloric Effect in Manganite Nanoparticles</h3>
+      <p>Investigating the magnetic entropy change (ΔS<sub>M</sub>) and relative cooling power in Nd₀.₇Sr₀.₃MnO₃ nanoparticles using Maxwell's thermodynamic relations and Arrott plot analysis.</p>
+      <span class="research-status status-active">Active</span>
+    </div>
+
+    <div class="research-card">
+      <div class="research-icon">◈</div>
+      <h3>Tricritical Phenomena in Magnetic Systems</h3>
+      <p>Characterizing the nature of magnetic phase transitions using modified Arrott plots, critical exponent analysis, and scaling behavior near the tricritical point in perovskite manganites.</p>
+      <span class="research-status status-active">Active</span>
+    </div>
+
+    <div class="research-card">
+      <div class="research-icon">▣</div>
+      <h3>Nano-scale Effects on Magnetic Ordering</h3>
+      <p>Understanding how particle size reduction and surface effects influence Curie temperature, magnetic anisotropy, coercivity, and the order of magnetic phase transitions in manganite systems.</p>
+      <span class="research-status status-ongoing">Ongoing</span>
+    </div>
+
+    <div class="research-card">
+      <div class="research-icon">∞</div>
+      <h3>DFT Studies of 2D Materials</h3>
+      <p>First-principles calculations of boron/carbon-doped WS<sub>2</sub>/graphene bilayers to understand sodium-ion intercalation and migration pathways — critical for next-generation battery electrodes.</p>
+      <span class="research-status status-active">Active</span>
+    </div>
+
+    <div class="research-card">
+      <div class="research-icon">◉</div>
+      <h3>Sustainable Energy Storage Materials</h3>
+      <p>Developing high-performance supercapacitor composites derived from recycled alkaline batteries. A green materials chemistry approach turning waste into functional energy storage.</p>
+      <span class="research-status status-active">Active</span>
+    </div>
+
+    <div class="research-card">
+      <div class="research-icon">⬡</div>
+      <h3>Machine Learning for Materials Discovery</h3>
+      <p>Exploring how ML techniques can accelerate the identification of novel magnetocaloric materials and predict critical behavior directly from composition and structural descriptors.</p>
+      <span class="research-status status-ongoing">Ongoing</span>
+    </div>
+
+  </div>
+
+  <!-- ─── METHODS ─── -->
+  <section class="methods-section fade-in">
+    <div class="section-label">Methods &amp; Tools</div>
+    <h2 class="research-section-title" style="margin-top: 8px;">Experimental &amp; Computational Toolkit</h2>
+    <p style="color: var(--muted); max-width: 600px;">
+      A research program combining hands-on experimental synthesis and characterization with state-of-the-art 
+      computational methods.
+    </p>
+    <div class="methods-grid">
+      <div class="method-item">
+        <h4>Synthesis</h4>
+        <p>Solid-state reaction, sol-gel method, and co-precipitation for rare-earth manganite nanoparticles and oxide composites.</p>
+      </div>
+      <div class="method-item">
+        <h4>Structural Characterization</h4>
+        <p>X-ray diffraction (XRD) with Rietveld refinement, SEM, TEM for microstructural analysis.</p>
+      </div>
+      <div class="method-item">
+        <h4>Magnetic Measurement</h4>
+        <p>VSM and SQUID magnetometry for M(T), M(H) isotherms, AC susceptibility, and magnetocaloric measurements.</p>
+      </div>
+      <div class="method-item">
+        <h4>First-Principles</h4>
+        <p>DFT calculations (VASP, Gaussian) for electronic structure, band analysis, and ion migration barriers.</p>
+      </div>
+      <div class="method-item">
+        <h4>Data Analysis</h4>
+        <p>Origin, Igor Pro, and Python (NumPy, SciPy, Matplotlib) for Arrott plot analysis and critical exponent extraction.</p>
+      </div>
+      <div class="method-item">
+        <h4>Machine Learning</h4>
+        <p>scikit-learn and TensorFlow for predictive modeling in materials informatics and descriptor-based property prediction.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── COLLABORATIONS ─── -->
+  <h2 class="research-section-title fade-in">Collaborations &amp; Partners</h2>
+  <div class="collab-list">
+    <div class="collab-item">
+      <h4>Phan Thế Long Group</h4>
+      <div class="collab-org">VNU-UET</div>
+      <p>Magnetocaloric materials synthesis and critical behavior analysis.</p>
+    </div>
+    <div class="collab-item">
+      <h4>Dr. Nguyen Thuy Trang</h4>
+      <div class="collab-org">VNU-HUS</div>
+      <p>First-principles computational materials science.</p>
+    </div>
+    <div class="collab-item">
+      <h4>VNU Engineering Physics Network</h4>
+      <div class="collab-org">VNU-UET</div>
+      <p>Interdisciplinary research in nanomaterials and energy storage.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: April 2026</p>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publications — Minh-Hieu Nguyen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --sage: #4a6741;
+  --gold: #b8860b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+
+nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--ink); text-decoration: none;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+
+.nav-links a {
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color 0.25s; position: relative;
+}
+
+.nav-links a::after {
+  content: ''; position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; background: none; border: none; padding: 4px;
+}
+
+.hamburger span { width: 24px; height: 2px; background: var(--ink); }
+
+/* ─── PAGE HERO ─── */
+.page-hero {
+  padding: 140px 40px 40px;
+  position: relative; overflow: hidden;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%; right: -15%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(139,37,0,0.03) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.page-hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  position: relative; z-index: 1;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.section-label::before {
+  content: ''; width: 32px; height: 1.5px;
+  background: var(--accent);
+}
+
+.page-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.2rem; font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.page-hero p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  max-width: 620px;
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+/* Stats bar */
+.pub-stats {
+  display: flex;
+  gap: 40px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.pub-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pub-stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.pub-stat-label {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pub-stat-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.pub-stat-link:hover { text-decoration: underline; }
+
+/* ─── FILTERS ─── */
+.pub-controls {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 40px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.pub-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pub-filter {
+  padding: 8px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.pub-filter.active, .pub-filter:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(139,37,0,0.04);
+}
+
+.pub-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.pub-sort select {
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* ─── PUB LIST ─── */
+.pub-list {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 40px 80px;
+}
+
+.pub-year-group {
+  margin-bottom: 40px;
+}
+
+.pub-year-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.pub-year-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+
+.pub-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: start;
+  padding: 24px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  transition: all 0.25s;
+  margin-bottom: 12px;
+}
+
+.pub-item:hover {
+  background: white;
+  border-color: var(--border);
+  box-shadow: 0 6px 24px var(--shadow);
+}
+
+.pub-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.pub-authors {
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+.pub-authors strong { color: var(--ink); }
+
+.pub-journal {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--sage);
+  margin-bottom: 12px;
+}
+
+.pub-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.pub-badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.badge-journal { background: rgba(139,37,0,0.08); color: var(--accent); }
+.badge-conference { background: rgba(184,134,11,0.1); color: var(--gold); }
+.badge-preprint { background: rgba(107,107,123,0.1); color: var(--muted); }
+
+.pub-citations {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(74,103,65,0.08);
+  color: var(--sage);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pub-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.pub-link {
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.pub-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+
+.footer-social {
+  display: flex; justify-content: center; gap: 24px;
+  margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light);
+  color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p { font-size: 0.85rem; line-height: 1.6; }
+
+/* Animations */
+.fade-in {
+  opacity: 0; transform: translateY(24px);
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pub-item {
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUp 0.5s ease forwards;
+}
+.pub-item:nth-child(1) { animation-delay: 0.08s; }
+.pub-item:nth-child(2) { animation-delay: 0.16s; }
+.pub-item:nth-child(3) { animation-delay: 0.24s; }
+.pub-item:nth-child(4) { animation-delay: 0.32s; }
+.pub-item:nth-child(5) { animation-delay: 0.40s; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .page-hero h1 { font-size: 2.4rem; }
+  .pub-item { grid-template-columns: 1fr; gap: 12px; }
+}
+
+@media (max-width: 640px) {
+  .page-hero { padding: 100px 20px 32px; }
+  .pub-controls { padding: 24px 20px 16px; flex-direction: column; align-items: flex-start; }
+  .pub-list { padding: 20px 20px 60px; }
+  .page-hero h1 { font-size: 2rem; }
+  .pub-year-heading { font-size: 2rem; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  nav.menu-open .nav-links {
+    display: flex; flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .pub-stats { gap: 24px; }
+  .pub-stat-number { font-size: 1.6rem; }
+  .pub-item { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="publications.html" class="active">Publications</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="page-hero">
+  <div class="page-hero-inner fade-in">
+    <div class="section-label">Publications</div>
+    <h1>Research Output &amp;<br>Scholarly Contributions</h1>
+    <p>
+      A complete list of peer-reviewed journal articles, conference proceedings, and preprints 
+      spanning condensed matter physics, computational materials science, and nanotechnology.
+    </p>
+
+    <div class="pub-stats">
+      <div class="pub-stat">
+        <span class="pub-stat-number" id="totalPubs">5</span>
+        <span class="pub-stat-label">Publications</span>
+      </div>
+      <div class="pub-stat">
+        <span class="pub-stat-number">4</span>
+        <span class="pub-stat-label">Citations</span>
+      </div>
+      <div class="pub-stat">
+        <span class="pub-stat-number">1</span>
+        <span class="pub-stat-label">h-index</span>
+      </div>
+      <div class="pub-stat">
+        <span class="pub-stat-label" style="margin-bottom: 4px;">Google Scholar</span>
+        <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" target="_blank" class="pub-stat-link">
+          View Full Profile →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FILTERS ─── -->
+<div class="pub-controls">
+  <div class="pub-filters">
+    <button class="pub-filter active" onclick="filterPubs('all', this)">All</button>
+    <button class="pub-filter" onclick="filterPubs('journal', this)">Journal Articles</button>
+    <button class="pub-filter" onclick="filterPubs('conference', this)">Conference</button>
+    <button class="pub-filter" onclick="filterPubs('preprint', this)">Preprints</button>
+  </div>
+  <div class="pub-sort">
+    <span>Sort by:</span>
+    <select id="sortSelect" onchange="sortPubs()">
+      <option value="newest">Newest first</option>
+      <option value="oldest">Oldest first</option>
+      <option value="citations">Most cited</option>
+    </select>
+  </div>
+</div>
+
+<!-- ─── PUB LIST ─── -->
+<main class="pub-list" id="pubList">
+
+  <!-- ═══ 2026 ═══ -->
+  <div class="pub-year-group" data-year="2026">
+    <h2 class="pub-year-heading">2026</h2>
+    <div class="pub-year-divider"></div>
+
+    <div class="pub-item" data-type="journal" data-year="2026" data-citations="0">
+      <div class="pub-info">
+        <h4>Critical behavior and magnetocaloric properties of Nd<sub>0.7</sub>Sr<sub>0.3</sub>MnO<sub>3</sub> nanoparticles</h4>
+        <div class="pub-authors">TL Phan, DN Petrov, <strong>NM Hieu</strong>, KTH My, HA Tam, VN Thuc, NH Nam, ...</div>
+        <div class="pub-journal">Ceramics International, 2026</div>
+        <div class="pub-meta">
+          <span class="pub-badge badge-journal">Journal Article</span>
+        </div>
+      </div>
+      <div class="pub-links">
+        <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:u5HHmVD_uO8C" class="pub-link" target="_blank">Scholar</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 2025 ═══ -->
+  <div class="pub-year-group" data-year="2025">
+    <h2 class="pub-year-heading">2025</h2>
+    <div class="pub-year-divider"></div>
+
+    <div class="pub-item" data-type="journal" data-year="2025" data-citations="3">
+      <div class="pub-info">
+        <h4>High-performance supercapacitors from composites derived from recycled alkaline batteries</h4>
+        <div class="pub-authors">TTT Vuong, V Van Thang, TN Tran, <strong>NM Hieu</strong>, PL Nguyen, TVB Phung</div>
+        <div class="pub-journal">Scientific Reports 15 (1), 41600</div>
+        <div class="pub-meta">
+          <span class="pub-badge badge-journal">Journal Article</span>
+          <span class="pub-citations">📖 3 citations</span>
+        </div>
+      </div>
+      <div class="pub-links">
+        <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:d1gkVwhDpl0C" class="pub-link" target="_blank">Scholar</a>
+      </div>
+    </div>
+
+    <div class="pub-item" data-type="journal" data-year="2025" data-citations="1">
+      <div class="pub-info">
+        <h4>Enhanced sodium-ion intercalation and migration in boron/carbon-doped WS<sub>2</sub>/graphene bilayers: insights from electronic structure calculations</h4>
+        <div class="pub-authors">TN Tran, NH Son, <strong>NM Hieu</strong>, TT Nguyen, Y Kawazoe, LH Duc, MT Dang, ...</div>
+        <div class="pub-journal">RSC Advances 15 (30), 24575–24587</div>
+        <div class="pub-meta">
+          <span class="pub-badge badge-journal">Journal Article</span>
+          <span class="pub-citations">📖 1 citation</span>
+        </div>
+      </div>
+      <div class="pub-links">
+        <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:2osOgNQ5qMEC" class="pub-link" target="_blank">Scholar</a>
+      </div>
+    </div>
+
+    <div class="pub-item" data-type="preprint" data-year="2025" data-citations="0">
+      <div class="pub-info">
+        <h4>Utilizing Recycled Carbon from Alkaline Batteries to Fabricate C@MnO<sub>2</sub>: A Green Solution for Energy Storage</h4>
+        <div class="pub-authors">PL Nguyen, TTT Vuong, V Van Thang, VBT Phung, <strong>MH Nguyen</strong>, ...</div>
+        <div class="pub-journal">Available at SSRN 5314137</div>
+        <div class="pub-meta">
+          <span class="pub-badge badge-preprint">Preprint</span>
+        </div>
+      </div>
+      <div class="pub-links">
+        <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:9yKSN-GCB0IC" class="pub-link" target="_blank">Scholar</a>
+        <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5314137" class="pub-link" target="_blank">SSRN</a>
+      </div>
+    </div>
+
+    <div class="pub-item" data-type="conference" data-year="2025" data-citations="0">
+      <div class="pub-info">
+        <h4>Tính chất từ và từ nhiệt của La<sub>0.7</sub>Ca<sub>0.3</sub>MnO<sub>3</sub> pha tạp Sn</h4>
+        <div class="pub-authors">ĐNT Kim T. H. Mỹ, <strong>Nguyễn Minh Hiếu</strong>, Phan Thế Long, Trần Đăng Thành, Đỗ Hùng, ...</div>
+        <div class="pub-journal">Hội nghị Vật lý chất rắn và Khoa học vật liệu toàn quốc lần thứ 14 – SPMS</div>
+        <div class="pub-meta">
+          <span class="pub-badge badge-conference">Conference</span>
+        </div>
+      </div>
+      <div class="pub-links">
+        <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:u-x6o8ySG0sC" class="pub-link" target="_blank">Scholar</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-results" id="noResults" style="display: none;">
+    <p>No publications match this filter. Try another category.</p>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: April 2026</p>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+
+// ─── Filter publications
+function filterPubs(type, btn) {
+  document.querySelectorAll('.pub-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const items = document.querySelectorAll('.pub-item');
+  let visibleCount = 0;
+
+  items.forEach(item => {
+    if (type === 'all' || item.dataset.type === type) {
+      item.style.display = 'grid';
+      visibleCount++;
+    } else {
+      item.style.display = 'none';
+    }
+  });
+
+  // Hide year groups with no visible items
+  document.querySelectorAll('.pub-year-group').forEach(group => {
+    const visibleInGroup = group.querySelectorAll('.pub-item[style*="grid"]').length;
+    group.style.display = visibleInGroup === 0 ? 'none' : 'block';
+  });
+
+  document.getElementById('totalPubs').textContent = visibleCount;
+  document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+// ─── Sort publications
+function sortPubs() {
+  const sortBy = document.getElementById('sortSelect').value;
+  const pubList = document.getElementById('pubList');
+  const items = Array.from(document.querySelectorAll('.pub-item'));
+
+  items.sort((a, b) => {
+    if (sortBy === 'newest') return parseInt(b.dataset.year) - parseInt(a.dataset.year);
+    if (sortBy === 'oldest') return parseInt(a.dataset.year) - parseInt(b.dataset.year);
+    if (sortBy === 'citations') return parseInt(b.dataset.citations) - parseInt(a.dataset.citations);
+  });
+
+  // Re-group by year for "newest"/"oldest", or flatten for "citations"
+  if (sortBy === 'citations') {
+    // Flatten: remove year groupings temporarily
+    const flatContainer = document.createElement('div');
+    flatContainer.className = 'pub-year-group';
+    items.forEach(item => flatContainer.appendChild(item));
+    // Replace content
+    pubList.innerHTML = '';
+    const heading = document.createElement('h2');
+    heading.className = 'pub-year-heading';
+    heading.textContent = 'Sorted by Citations';
+    const divider = document.createElement('div');
+    divider.className = 'pub-year-divider';
+    pubList.appendChild(heading);
+    pubList.appendChild(divider);
+    items.forEach(item => pubList.appendChild(item));
+    pubList.appendChild(document.getElementById('noResults'));
+  } else {
+    // Rebuild year groups
+    location.reload(); // Simple reload to restore original year grouping
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Minh-Hieu Nguyen — Researcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --gold: #b8860b;
+  --sage: #4a6741;
+  --section-gap: 120px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+
+nav.scrolled {
+  box-shadow: 0 2px 20px var(--shadow);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.25s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  transition: 0.3s;
+}
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(139,37,0,0.04) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(74,103,65,0.04) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 40px 80px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.hero-text .subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--accent);
+  font-style: italic;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.hero-text .tagline {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.8;
+  margin-bottom: 36px;
+}
+
+.hero-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: 2px solid var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--accent-light);
+  border-color: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 37, 0, 0.2);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--border);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.hero-photo {
+  position: relative;
+}
+
+.photo-frame {
+  width: 280px;
+  height: 340px;
+  background: var(--cream);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px var(--shadow);
+  border: 3px solid white;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-decor {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  top: -16px;
+  right: -16px;
+  opacity: 0.15;
+}
+
+/* ─── SECTION COMMON ─── */
+section {
+  padding: 0 40px;
+  margin-bottom: var(--section-gap);
+}
+
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before {
+  content: '';
+  width: 32px;
+  height: 1.5px;
+  background: var(--accent);
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.section-desc {
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin-bottom: 48px;
+  line-height: 1.8;
+}
+
+/* ─── ABOUT ─── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.about-text p {
+  margin-bottom: 20px;
+  line-height: 1.85;
+}
+
+.about-text p:first-child::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 6px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.about-sidebar {
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 36px;
+  border: 1px solid var(--border);
+}
+
+.about-sidebar h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.info-row:last-child { border-bottom: none; }
+
+.info-label { color: var(--muted); font-weight: 400; }
+.info-value { font-weight: 600; text-align: right; }
+
+.interest-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.tag {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--muted);
+  transition: all 0.25s;
+}
+
+.tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(139,37,0,0.04);
+}
+
+/* ─── RESEARCH ─── */
+.research-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.research-card {
+  background: white;
+  border-radius: 12px;
+  padding: 36px;
+  border: 1px solid var(--border);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.research-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: var(--accent);
+  transition: height 0.35s ease;
+}
+
+.research-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--shadow);
+  border-color: transparent;
+}
+
+.research-card:hover::before { height: 100%; }
+
+.research-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+.research-card:nth-child(1) .research-icon { background: rgba(139,37,0,0.08); color: var(--accent); }
+.research-card:nth-child(2) .research-icon { background: rgba(74,103,65,0.1); color: var(--sage); }
+.research-card:nth-child(3) .research-icon { background: rgba(184,134,11,0.1); color: var(--gold); }
+
+.research-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.research-card p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.research-status {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.status-active { background: rgba(74,103,65,0.1); color: var(--sage); }
+.status-ongoing { background: rgba(184,134,11,0.1); color: var(--gold); }
+
+/* ─── PUBLICATIONS ─── */
+.pub-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.pub-filter {
+  padding: 8px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.pub-filter.active, .pub-filter:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(139,37,0,0.04);
+}
+
+.pub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pub-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 24px;
+  align-items: start;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.pub-item:hover {
+  background: rgba(243,240,232,0.5);
+  margin: 0 -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 8px;
+}
+
+.pub-year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 500;
+  padding-top: 4px;
+}
+
+.pub-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+
+.pub-authors {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.pub-authors strong {
+  color: var(--ink);
+}
+
+.pub-journal {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--sage);
+}
+
+.pub-links {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.pub-link {
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: all 0.25s;
+}
+
+.pub-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── CV / TIMELINE ─── */
+.cv-section {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 0;
+  margin-bottom: 48px;
+}
+
+.cv-category {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-top: 4px;
+  font-weight: 500;
+}
+
+.cv-entries {
+  border-left: 2px solid var(--border);
+  padding-left: 32px;
+}
+
+.cv-entry {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.cv-entry:last-child { margin-bottom: 0; }
+
+.cv-entry::before {
+  content: '';
+  position: absolute;
+  left: -39px;
+  top: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  border: 2.5px solid var(--accent);
+}
+
+.cv-entry h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.cv-entry .cv-org {
+  font-weight: 600;
+  color: var(--sage);
+  font-size: 0.95rem;
+}
+
+.cv-entry .cv-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.cv-entry p {
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+
+.cv-download {
+  margin-top: 40px;
+}
+
+/* ─── BLOG ─── */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.blog-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: all 0.35s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--shadow);
+}
+
+.blog-thumb {
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-thumb-1 { background: linear-gradient(135deg, #2d1810 0%, #5c2e1e 50%, #8b4513 100%); }
+.blog-thumb-2 { background: linear-gradient(135deg, #1a2e1a 0%, #2d4a2d 50%, #4a6741 100%); }
+.blog-thumb-3 { background: linear-gradient(135deg, #1a1a2e 0%, #2e2e5c 50%, #4a4a8b 100%); }
+.blog-thumb-plum { background: linear-gradient(135deg, #2e1a2e 0%, #5c2e5c 50%, #8b4a8b 100%); }
+
+.blog-thumb-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  background-image: 
+    radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
+    radial-gradient(circle at 80% 30%, white 1px, transparent 1px),
+    radial-gradient(circle at 50% 80%, white 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.blog-thumb-label {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blog-body {
+  padding: 28px;
+}
+
+.blog-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.blog-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.blog-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.blog-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.blog-view-all {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ─── CONTACT ─── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+.contact-text p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  margin-bottom: 32px;
+}
+
+.contact-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-method {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--cream);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: all 0.25s;
+  border: 1px solid transparent;
+}
+
+.contact-method:hover {
+  background: white;
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+
+.contact-method-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.contact-method-text .cm-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.contact-method-text .cm-value {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.contact-form {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  border: 1px solid var(--border);
+}
+
+.contact-form h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.95rem;
+  color: var(--ink);
+  transition: border-color 0.25s;
+  background: var(--paper);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.form-submit:hover {
+  background: var(--accent-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(139,37,0,0.2);
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light);
+  color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* ─── ANIMATIONS ─── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    text-align: center;
+  }
+  .hero-text .tagline { margin-left: auto; margin-right: auto; }
+  .hero-links { justify-content: center; }
+  .hero-photo { display: flex; justify-content: center; order: -1; }
+  .photo-decor { display: none; }
+  .about-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .cv-section { grid-template-columns: 1fr; gap: 12px; }
+  .cv-category { margin-bottom: 8px; }
+  .section-title { font-size: 2rem; }
+  .hero-text h1 { font-size: 2.8rem; }
+}
+
+@media (max-width: 640px) {
+  section { padding: 0 20px; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  
+  nav.menu-open .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+  
+  .hero-inner { padding: 100px 20px 60px; }
+  .hero-text h1 { font-size: 2.2rem; }
+  .pub-item { grid-template-columns: 1fr; gap: 8px; }
+  .pub-year { font-size: 0.78rem; }
+  .pub-links { padding-top: 8px; }
+  .research-cards { grid-template-columns: 1fr; }
+  .blog-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>Minh-Hieu Nguyen</h1>
+      <p class="subtitle">Condensed Matter Physicist &amp; Materials Scientist</p>
+      <p class="tagline">
+        Exploring magnetocaloric effects, tricritical phenomena, and nano-scale 
+        magnetic phase transitions in manganite perovskites. Driven by the pursuit 
+        of next-generation magnetic refrigeration technologies.
+      </p>
+      <div class="hero-links">
+        <a href="publications.html" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Publications
+        </a>
+        <a href="#contact" class="btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Get in Touch
+        </a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="photo-frame">
+        <img src="images/profile.jpg"
+             alt="Minh-Hieu Nguyen"
+             style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div class="photo-decor"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="section-inner fade-in">
+    <div class="section-label">About Me</div>
+    <div class="section-title">Researcher, Scientist, Educator</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>My research lies at the intersection of condensed matter physics and advanced materials science, with a particular focus on understanding magnetocaloric effects in rare-earth manganite nanoparticles. I am passionate about unraveling the fundamental physics of magnetic phase transitions and their potential applications in energy-efficient cooling technologies.</p>
+        <p>Currently, I am investigating the tricritical behavior in Nd₀.₇Sr₀.₃MnO₃ nanoparticles — studying how nano-scale confinement influences magnetic ordering, phase transitions, and entropy changes. This work has implications for the development of next-generation magnetic refrigeration systems that could replace conventional vapor-compression cooling.</p>
+        <p>Beyond research, I am committed to mentoring young scientists and contributing to the broader scientific community through peer review, conference presentations, and collaborative research projects across institutional boundaries.</p>
+      </div>
+      <div class="about-sidebar">
+        <h3>Quick Facts</h3>
+        <div class="info-row">
+          <span class="info-label">Position</span>
+          <span class="info-value">Researcher</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Institution</span>
+          <span class="info-value">VNU University of Engineering and Technology</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Department</span>
+          <span class="info-value">Faculty of Engineering Physics and Nanotechnology</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Location</span>
+          <span class="info-value">Hanoi, Vietnam</span>
+        </div>
+        <div class="interest-tags">
+          <span class="tag">Magnetocaloric Effect</span>
+          <span class="tag">Manganites</span>
+          <span class="tag">Nanoparticles</span>
+          <span class="tag">Phase Transitions</span>
+          <span class="tag">Tricritical Behavior</span>
+          <span class="tag">Magnetic Refrigeration</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── RESEARCH ─── -->
+<section id="research">
+  <div class="section-inner fade-in">
+    <div class="section-label">Research</div>
+    <div class="section-title">Current Research Interests</div>
+    <div class="section-desc">Bridging fundamental physics with technological applications through the study of magnetic materials at the nanoscale.</div>
+    <div class="research-cards">
+      <div class="research-card">
+        <div class="research-icon">⚛</div>
+        <h3>Magnetocaloric Effect in Manganite Nanoparticles</h3>
+        <p>Investigating the magnetic entropy change (ΔS<sub>M</sub>) and relative cooling power in Nd₀.₇Sr₀.₃MnO₃ nanoparticles using Maxwell's thermodynamic relations and Arrott plot analysis.</p>
+        <span class="research-status status-active">Active</span>
+      </div>
+      <div class="research-card">
+        <div class="research-icon">◈</div>
+        <h3>Tricritical Phenomena in Magnetic Systems</h3>
+        <p>Characterizing the nature of magnetic phase transitions using modified Arrott plots, critical exponent analysis, and scaling behavior near the tricritical point in perovskite manganites.</p>
+        <span class="research-status status-active">Active</span>
+      </div>
+      <div class="research-card">
+        <div class="research-icon">▣</div>
+        <h3>Nano-scale Effects on Magnetic Ordering</h3>
+        <p>Understanding how particle size reduction and surface effects influence Curie temperature, magnetic anisotropy, coercivity, and the order of magnetic phase transitions in manganite systems.</p>
+        <span class="research-status status-ongoing">Ongoing</span>
+      </div>
+    </div>
+
+    <!-- Nút xem tất cả research -->
+    <div class="blog-view-all">
+      <a href="research.html" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        Explore All Research
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PUBLICATIONS ─── -->
+<section id="publications">
+  <div class="section-inner fade-in">
+    <div class="section-label">Publications</div>
+    <div class="section-title">Recent Publications</div>
+    <div class="section-desc">A glimpse at the latest peer-reviewed journal articles and conference contributions.</div>
+
+    <div class="pub-list">
+      <!-- Publication 1 -->
+      <div class="pub-item" data-type="journal">
+        <div class="pub-year">2026</div>
+        <div class="pub-info">
+          <h4>Critical behavior and magnetocaloric properties of Nd<sub>0.7</sub>Sr<sub>0.3</sub>MnO<sub>3</sub> nanoparticles</h4>
+          <div class="pub-authors">TL Phan, DN Petrov, <strong>NM Hieu</strong>, KTH My, HA Tam, VN Thuc, NH Nam, ...</div>
+          <div class="pub-journal">Ceramics International, 2026</div>
+        </div>
+        <div class="pub-links">
+          <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:u5HHmVD_uO8C" class="pub-link" target="_blank">Scholar</a>
+        </div>
+      </div>
+
+      <!-- Publication 2 -->
+      <div class="pub-item" data-type="journal">
+        <div class="pub-year">2025</div>
+        <div class="pub-info">
+          <h4>High-performance supercapacitors from composites derived from recycled alkaline batteries</h4>
+          <div class="pub-authors">TTT Vuong, V Van Thang, TN Tran, <strong>NM Hieu</strong>, PL Nguyen, TVB Phung</div>
+          <div class="pub-journal">Scientific Reports 15 (1), 41600</div>
+        </div>
+        <div class="pub-links">
+          <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:d1gkVwhDpl0C" class="pub-link" target="_blank">Scholar</a>
+          <span class="pub-link" style="background: rgba(74,103,65,0.08); color: var(--sage); border-color: var(--sage);">3 citations</span>
+        </div>
+      </div>
+
+      <!-- Publication 3 -->
+      <div class="pub-item" data-type="journal">
+        <div class="pub-year">2025</div>
+        <div class="pub-info">
+          <h4>Enhanced sodium-ion intercalation and migration in boron/carbon-doped WS<sub>2</sub>/graphene bilayers: insights from electronic structure calculations</h4>
+          <div class="pub-authors">TN Tran, NH Son, <strong>NM Hieu</strong>, TT Nguyen, Y Kawazoe, LH Duc, MT Dang, ...</div>
+          <div class="pub-journal">RSC Advances 15 (30), 24575–24587</div>
+        </div>
+        <div class="pub-links">
+          <a href="https://scholar.google.com/citations?view_op=view_citation&hl=vi&user=QUdAPR8AAAAJ&citation_for_view=QUdAPR8AAAAJ:2osOgNQ5qMEC" class="pub-link" target="_blank">Scholar</a>
+          <span class="pub-link" style="background: rgba(74,103,65,0.08); color: var(--sage); border-color: var(--sage);">1 citation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nút xem tất cả publications -->
+    <div class="blog-view-all">
+      <a href="publications.html" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        View All Publications
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CV PREVIEW (rút gọn) ─── -->
+<section id="cv">
+  <div class="section-inner fade-in">
+    <div class="section-label">Curriculum Vitae</div>
+    <div class="section-title">Academic Journey</div>
+    <div class="section-desc">A brief overview of education — full CV with experience, skills, and more is on the dedicated page.</div>
+
+    <div class="cv-section">
+      <div class="cv-category">Education</div>
+      <div class="cv-entries">
+        <div class="cv-entry">
+          <h4>Ph.D. in Physics / Materials Science</h4>
+          <div class="cv-org">Your University</div>
+          <div class="cv-date">20XX – 20XX</div>
+          <p>Dissertation: "Magnetocaloric effect and critical phenomena in rare-earth manganite nanoparticles." Advisor: Prof. [Name].</p>
+        </div>
+        <div class="cv-entry">
+          <h4>B.Sc. / M.Sc. in Physics</h4>
+          <div class="cv-org">Your University</div>
+          <div class="cv-date">20XX – 20XX</div>
+          <p>Graduated with honors. Thesis on magnetic properties of perovskite oxides.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nút xem CV đầy đủ -->
+    <div class="blog-view-all">
+      <a href="cv.html" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        View Full CV
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BLOG (chỉ hiện 3 bài mới nhất) ─── -->
+<section id="blog">
+  <div class="section-inner fade-in">
+    <div class="section-label">Blog &amp; Notes</div>
+    <div class="section-title">Research Notes &amp; Thoughts</div>
+    <div class="section-desc">Sharing insights, research progress, and reflections on condensed matter physics.</div>
+
+    <div class="blog-grid">
+      <a href="posts/your-body-has-been-screaming.html" class="blog-card">
+        <div class="blog-thumb blog-thumb-plum">
+          <div class="blog-thumb-pattern"></div>
+          <span class="blog-thumb-label">Personal</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-date">April 2026</div>
+          <h3>Your Body Has Been Screaming. But Are You Listening?</h3>
+          <p>A raw reflection on burnout, the illusion of productivity, and the moment I realized no success is worth it if you're not healthy enough to enjoy it.</p>
+          <span class="blog-read-more">Read more →</span>
+        </div>
+      </a>
+      <a href="blog.html" class="blog-card">
+        <div class="blog-thumb blog-thumb-1">
+          <div class="blog-thumb-pattern"></div>
+          <span class="blog-thumb-label">Tutorial</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-date">March 2026</div>
+          <h3>Understanding Arrott Plots: A Practical Guide for Experimentalists</h3>
+          <p>A step-by-step walkthrough of modified Arrott plots for determining the order of magnetic phase transitions and extracting critical exponents.</p>
+          <span class="blog-read-more">Read more →</span>
+        </div>
+      </a>
+      <a href="blog.html" class="blog-card">
+        <div class="blog-thumb blog-thumb-2">
+          <div class="blog-thumb-pattern"></div>
+          <span class="blog-thumb-label">Research</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-date">January 2026</div>
+          <h3>Why Nano-sized Manganites Behave Differently: Surface Effects and Magnetic Ordering</h3>
+          <p>Exploring how reducing particle size to the nanoscale changes the fundamental magnetic behavior of perovskite manganites.</p>
+          <span class="blog-read-more">Read more →</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Nút xem tất cả blog -->
+    <div class="blog-view-all">
+      <a href="blog.html" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        View All Posts
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section id="contact">
+  <div class="section-inner fade-in">
+    <div class="section-label">Contact</div>
+    <div class="section-title">Let's Connect</div>
+    <div class="contact-grid">
+      <div class="contact-text">
+        <p>I am always open to discussing research collaborations, speaking opportunities, or simply exchanging ideas about magnetocaloric materials and condensed matter physics. Feel free to reach out through any of the channels below.</p>
+        <div class="contact-methods">
+          <a href="mailto:hieunguyen10x@gmail.com" class="contact-method">
+            <div class="contact-method-icon">✉</div>
+            <div class="contact-method-text">
+              <div class="cm-label">Email</div>
+              <div class="cm-value">hieunguyen10x@gmail.com</div>
+            </div>
+          </a>
+          <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" class="contact-method">
+            <div class="contact-method-icon">🎓</div>
+            <div class="contact-method-text">
+              <div class="cm-label">Google Scholar</div>
+              <div class="cm-value">View Profile</div>
+            </div>
+          </a>
+          <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" class="contact-method">
+            <div class="contact-method-icon">🔬</div>
+            <div class="contact-method-text">
+              <div class="cm-label">ORCID</div>
+              <div class="cm-value">0009-0009-7243-8101</div>
+            </div>
+          </a>
+          <a href="#" class="contact-method">
+            <div class="contact-method-icon">🏢</div>
+            <div class="contact-method-text">
+              <div class="cm-label">Office</div>
+              <div class="cm-value">Room 206, Building E4, Campus VNU (144 Xuan Thuy, Cau Giay, Hanoi)</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h3>Send a Message</h3>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" placeholder="Your full name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="your.email@example.com">
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" placeholder="Research collaboration, question, etc.">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea placeholder="Tell me about your inquiry..."></textarea>
+        </div>
+        <button class="form-submit" onclick="alert('Thank you! Your message has been sent. (Demo)')">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: April 2026</p>
+  </div>
+</footer>
+
+<script>
+// ─── Navbar scroll effect
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ─── Hamburger menu
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+
+// Close menu on link click
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+
+// ─── Fade-in on scroll
+const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -40px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ─── Publication filter
+function filterPubs(type, btn) {
+  document.querySelectorAll('.pub-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  document.querySelectorAll('.pub-item').forEach(item => {
+    if (type === 'all' || item.dataset.type === type) {
+      item.style.display = 'grid';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>
