@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding Arrott Plots — Minh-Hieu Nguyen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- KaTeX for professional math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });"></script>
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --sage: #4a6741;
+  --gold: #b8860b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--ink); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+
+.nav-links a {
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color 0.25s; position: relative;
+}
+
+.nav-links a::after {
+  content: ''; position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent); transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; background: none; border: none; padding: 4px;
+}
+.hamburger span { width: 24px; height: 2px; background: var(--ink); transition: 0.3s; }
+
+/* ─── ARTICLE HEADER ─── */
+.article-header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 140px 40px 0;
+}
+
+.article-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  margin-bottom: 40px; transition: color 0.25s;
+}
+.article-back:hover { color: var(--accent); }
+.article-back svg { transition: transform 0.25s; }
+.article-back:hover svg { transform: translateX(-4px); }
+
+.article-tag {
+  display: inline-block;
+  padding: 4px 14px; border-radius: 4px;
+  font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(139,37,0,0.08); color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.article-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 700;
+  line-height: 1.15; letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.article-meta {
+  display: flex; align-items: center; gap: 20px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-meta-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; color: var(--muted);
+}
+
+.article-meta-divider {
+  width: 4px; height: 4px;
+  border-radius: 50%; background: var(--border);
+}
+
+/* ─── COVER ─── */
+.article-cover {
+  max-width: 720px;
+  margin: 48px auto;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #2d1810 0%, #5c2e1e 40%, #8b4513 100%);
+}
+
+.article-cover-pattern {
+  position: absolute; inset: 0;
+  opacity: 0.08;
+  background-image:
+    radial-gradient(circle at 15% 40%, white 1px, transparent 1px),
+    radial-gradient(circle at 85% 25%, white 1px, transparent 1px),
+    radial-gradient(circle at 50% 75%, white 1px, transparent 1px),
+    radial-gradient(circle at 30% 90%, white 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.article-cover-text {
+  position: absolute;
+  bottom: 36px; left: 36px; right: 36px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 600; font-style: italic;
+  color: rgba(255,255,255,0.7); line-height: 1.3;
+}
+
+/* ─── ARTICLE BODY ─── */
+.article-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+  text-align: justify;
+}
+
+.article-body p {
+  margin-bottom: 24px;
+  font-size: 1.06rem;
+  line-height: 1.9;
+  text-align: justify;
+}
+
+.article-body p:first-of-type::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem; float: left;
+  line-height: 0.75;
+  margin-right: 10px; margin-top: 8px;
+  color: var(--accent); font-weight: 700;
+}
+
+.article-body h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 700;
+  margin: 48px 0 20px;
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.article-body h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem; font-weight: 700;
+  margin: 36px 0 14px;
+  line-height: 1.3;
+  color: var(--ink);
+  text-align: left;
+}
+
+.article-body em { color: var(--muted); font-style: italic; }
+.article-body strong { color: var(--ink); font-weight: 700; }
+
+.article-body ul, .article-body ol {
+  margin: 0 0 24px 24px;
+  text-align: left;
+}
+
+.article-body li {
+  margin-bottom: 8px;
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.article-body li::marker {
+  color: var(--accent);
+}
+
+/* Highlight box */
+.article-highlight {
+  border-left: 3px solid var(--accent);
+  padding: 24px 28px;
+  margin: 36px 0;
+  background: var(--cream);
+  border-radius: 0 8px 8px 0;
+}
+
+.article-highlight p {
+  margin-bottom: 0 !important;
+  font-size: 1.02rem;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.8;
+}
+
+/* Separator */
+.article-separator {
+  text-align: center;
+  margin: 44px 0;
+  color: var(--border);
+  font-size: 1.4rem;
+  letter-spacing: 12px;
+}
+
+/* Pull quote */
+.article-pullquote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; font-style: italic;
+  color: var(--accent);
+  text-align: center;
+  padding: 36px 20px;
+  margin: 44px 0;
+  line-height: 1.4;
+  position: relative;
+}
+
+.article-pullquote::before,
+.article-pullquote::after {
+  content: ''; display: block;
+  width: 60px; height: 1.5px;
+  background: var(--accent);
+  margin: 0 auto 20px; opacity: 0.4;
+}
+.article-pullquote::after { margin: 20px auto 0; }
+
+/* Code block */
+.code-block {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border-radius: 10px;
+  padding: 28px;
+  margin: 28px 0;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.code-block .comment { color: #6c7086; }
+.code-block .keyword { color: #cba6f7; }
+.code-block .string { color: #a6e3a1; }
+.code-block .function { color: #89b4fa; }
+.code-block .number { color: #fab387; }
+.code-block .operator { color: #89dceb; }
+
+.code-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Equation box — KaTeX aware */
+.equation-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin: 28px 0;
+  text-align: center;
+}
+
+.equation-box .eq-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+/* KaTeX display output inside equation-box */
+.equation-box .katex-display {
+  margin: 0;
+}
+
+/* Inline KaTeX — ensure it doesn't disrupt line-height */
+.katex { font-size: 1.05em; }
+
+/* Table */
+.article-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 28px 0;
+  font-size: 0.95rem;
+}
+
+.article-table th {
+  background: var(--cream);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
+}
+
+.article-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+}
+
+.article-table td:first-child {
+  text-align: left;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.article-table tr:hover td {
+  background: rgba(243,240,232,0.4);
+}
+
+/* Step box */
+.step-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+  margin: 28px 0;
+  position: relative;
+}
+
+.step-number {
+  position: absolute;
+  top: -14px; left: 24px;
+  background: var(--accent);
+  color: white;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 700;
+}
+
+.step-box h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700;
+  margin-bottom: 10px;
+  padding-top: 4px;
+}
+
+.step-box p {
+  margin-bottom: 12px !important;
+  font-size: 0.98rem;
+}
+
+/* Warning box */
+.warning-box {
+  background: #fff8f0;
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px;
+  margin: 28px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.warning-box strong {
+  color: var(--gold);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.warning-box p {
+  margin-bottom: 0 !important;
+  font-size: 0.98rem;
+}
+
+/* ─── ARTICLE FOOTER ─── */
+.article-end {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+}
+
+.article-end-divider {
+  height: 1px; background: var(--border);
+  margin-bottom: 40px;
+}
+
+.article-author {
+  display: flex; align-items: center;
+  gap: 20px; margin-bottom: 40px;
+}
+
+.article-author-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--accent); flex-shrink: 0;
+  overflow: hidden;
+}
+
+.article-author-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.article-author-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 700;
+}
+
+.article-author-info p {
+  font-size: 0.88rem; color: var(--muted);
+}
+
+.article-nav {
+  display: flex; justify-content: space-between;
+  gap: 20px;
+}
+
+.article-nav a {
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none; color: var(--ink);
+  transition: all 0.25s; flex: 1;
+}
+
+.article-nav a:hover {
+  border-color: var(--accent);
+  background: rgba(139,37,0,0.02);
+}
+
+.article-nav-label {
+  font-size: 0.78rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  font-weight: 600; margin-bottom: 4px;
+}
+
+.article-nav-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 700; line-height: 1.3;
+}
+
+.article-nav .next { text-align: right; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px; text-align: center;
+}
+
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+
+.footer-social {
+  display: flex; justify-content: center;
+  gap: 24px; margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none; transition: all 0.3s; font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light); color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p { font-size: 0.85rem; line-height: 1.6; }
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* Animations */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.7s ease forwards;
+}
+.fade-in-delay { animation-delay: 0.15s; }
+.fade-in-delay-2 { animation-delay: 0.3s; }
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .article-header h1 { font-size: 2.2rem; }
+  .article-cover { height: 220px; margin: 36px 20px; }
+  .article-cover-text { font-size: 1.2rem; bottom: 24px; left: 24px; right: 24px; }
+}
+
+@media (max-width: 640px) {
+  .article-header { padding: 100px 20px 0; }
+  .article-body { padding: 0 20px 60px; }
+  .article-end { padding: 0 20px 60px; }
+  .article-header h1 { font-size: 1.9rem; }
+  .article-cover { height: 180px; }
+  .article-cover-text { font-size: 1rem; bottom: 20px; left: 20px; right: 20px; }
+  .article-body p { font-size: 1rem; }
+  .article-body h2 { font-size: 1.5rem; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  nav.menu-open .nav-links {
+    display: flex; flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .article-nav { flex-direction: column; }
+  .article-nav .next { text-align: left; }
+  .article-meta { flex-wrap: wrap; gap: 12px; }
+  .code-block { padding: 16px; font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../research.html">Research</a></li>
+      <li><a href="../publications.html">Publications</a></li>
+      <li><a href="../cv.html">CV</a></li>
+      <li><a href="../blog.html" class="active">Blog</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── ARTICLE HEADER ─── -->
+<header class="article-header fade-in">
+  <a href="../blog.html" class="article-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    Back to all posts
+  </a>
+  <span class="article-tag">Tutorial</span>
+  <h1>Understanding Arrott Plots: A Practical Guide for Experimentalists</h1>
+  <div class="article-meta">
+    <span class="article-meta-item">Minh-Hieu Nguyen</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">March 2026</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">12 min read</span>
+  </div>
+</header>
+
+<!-- ─── COVER ─── -->
+<div class="article-cover fade-in fade-in-delay">
+  <div class="article-cover-pattern"></div>
+  <div class="article-cover-text">"The shape of the isotherm tells you the nature of the transition."</div>
+</div>
+
+<!-- ─── ARTICLE BODY ─── -->
+<article class="article-body fade-in fade-in-delay-2">
+
+  <p>If you work with magnetic materials, sooner or later you will encounter Arrott plots. They are one of the most powerful yet underappreciated tools in magnetism research, allowing you to determine the order of a magnetic phase transition, extract critical exponents, and estimate the Curie temperature — all from straightforward magnetization data. Yet despite their importance, many experimental papers apply them incorrectly or incompletely. This guide aims to change that.</p>
+
+  <h2>1. What Is an Arrott Plot?</h2>
+
+  <p>An Arrott plot is simply a graph of \(M^2\) vs. \(H/M\) constructed from isothermal magnetization data \(M(H)\) measured at different temperatures around the Curie temperature \(T_C\). The idea was first proposed by Anthony Arrott in 1957 and originates from the Landau mean-field theory of phase transitions.</p>
+
+  <p>The underlying physics is elegant. Near a second-order phase transition, the magnetic equation of state can be written in a generalized form. In the simplest mean-field approximation, this reduces to a linear relationship between \(M^2\) and \(H/M\). If the transition is truly second-order and mean-field theory applies, the isotherms in an Arrott plot should appear as a set of parallel straight lines. The isotherm that passes through the origin corresponds to the Curie temperature.</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Arrott Equation (Mean-Field)</span>
+    $$\frac{H}{M} = a\left(T - T_C\right) + b\,M^2$$
+  </div>
+
+  <p>where \(a\) and \(b\) are material-dependent constants. Rearranging gives the linear form: plotting \(M^2\) on the \(y\)-axis versus \(H/M\) on the \(x\)-axis should yield straight lines if the mean-field description is valid.</p>
+
+  <h2>2. Why Arrott Plots Matter</h2>
+
+  <p>The real power of Arrott plots lies in what they reveal about the nature of the magnetic phase transition. In experimental work, knowing whether a transition is first-order or second-order has profound implications for understanding the underlying physics and for potential applications, particularly in magnetocaloric refrigeration.</p>
+
+  <div class="article-highlight">
+    <p>A second-order transition shows positive slopes in the Arrott plot. A first-order transition shows negative slopes or S-shaped curves with inflection points. This distinction is critical for magnetocaloric applications because the nature of the transition directly determines whether the entropy change is continuous or discontinuous.</p>
+  </div>
+
+  <p>Specifically, Arrott plots help you answer three fundamental questions about your magnetic material:</p>
+
+  <ol>
+    <li><strong>What is the order of the phase transition?</strong> The sign of the slope in the high-field region of the Arrott plot tells you directly. Positive slope means second-order; negative slope or S-shape means first-order. This criterion is often called the Banerjee criterion.</li>
+    <li><strong>What is the Curie temperature?</strong> The isotherm that passes through (or closest to) the origin in the \(M^2\) vs. \(H/M\) plot corresponds to \(T_C\).</li>
+    <li><strong>What are the critical exponents?</strong> Through modified Arrott plots (see below), you can extract \(\beta\), \(\gamma\), and \(\delta\), which define the universality class of your material's phase transition.</li>
+  </ol>
+
+  <h2>3. Step-by-Step: How to Construct an Arrott Plot</h2>
+
+  <div class="step-box">
+    <span class="step-number">1</span>
+    <h4>Collect Isothermal \(M(H)\) Data</h4>
+    <p>Measure magnetization \(M\) as a function of applied field \(H\) at multiple temperatures around the expected \(T_C\). Typical spacing is 2–5 K, and you need data both above and below \(T_C\). Ensure you go to sufficiently high fields (at least 5 T if possible) to reach the high-field linear regime. The more isotherms you measure, the more precise your analysis will be.</p>
+    <p>A typical measurement uses a VSM or SQUID magnetometer. Make sure your sample is properly aligned and demagnetization corrections are applied if the sample geometry requires it.</p>
+  </div>
+
+  <div class="step-box">
+    <span class="step-number">2</span>
+    <h4>Calculate \(M^2\) and \(H/M\)</h4>
+    <p>For each isotherm, compute \(M^2\) and \(H/M\) at every data point. This is straightforward — just square the magnetization values and divide the field by magnetization. Be careful with units: if \(M\) is in emu/g and \(H\) is in Oe, then \(H/M\) will be in Oe&#183;g/emu.</p>
+  </div>
+
+  <div class="step-box">
+    <span class="step-number">3</span>
+    <h4>Plot \(M^2\) vs. \(H/M\)</h4>
+    <p>Create the Arrott plot with \(H/M\) on the \(x\)-axis and \(M^2\) on the \(y\)-axis. Each isotherm appears as a separate curve. Color-code or label them by temperature. Below \(T_C\), curves will have a positive \(y\)-intercept (spontaneous magnetization exists). Above \(T_C\), curves will have a negative \(y\)-intercept (extrapolated). The curve passing through the origin marks \(T_C\).</p>
+  </div>
+
+  <div class="step-box">
+    <span class="step-number">4</span>
+    <h4>Apply the Banerjee Criterion</h4>
+    <p>Examine the slope of the isotherms in the high-field region. If all slopes are positive and the curves are quasi-linear, the transition is second-order. If any isotherm shows a negative slope or an S-shaped inflection, the transition has first-order character. Document this clearly — it is one of the most important results from the analysis.</p>
+  </div>
+
+  <div class="step-box">
+    <span class="step-number">5</span>
+    <h4>Extract \(T_C\) and Spontaneous Magnetization</h4>
+    <p>Perform a linear fit to the high-field portion of each isotherm. The \(y\)-intercept of each fit gives \(M_S^2(T)\) — the square of the spontaneous magnetization at that temperature. The \(x\)-intercept gives the inverse initial susceptibility \(\chi_0^{-1}(T)\). Plot \(M_S(T)\) and \(\chi_0^{-1}(T)\) versus temperature to determine \(T_C\) precisely.</p>
+  </div>
+
+  <h2>4. Modified Arrott Plots and Critical Exponents</h2>
+
+  <p>Standard Arrott plots assume mean-field critical exponents (\(\beta = 0.5\), \(\gamma = 1.0\)). However, real materials often belong to different universality classes. This is where <strong>Modified Arrott Plots (MAPs)</strong> become essential.</p>
+
+  <p>Instead of plotting \(M^2\) vs. \(H/M\), the modified version plots \(M^{1/\beta}\) vs. \((H/M)^{1/\gamma}\), where \(\beta\) and \(\gamma\) are the critical exponents appropriate for the universality class of the material. The correct exponents will produce the best set of parallel straight lines in the high-field region.</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Modified Arrott Plot (Generalized)</span>
+    $$\left(\frac{H}{M}\right)^{1/\gamma} = a\,\varepsilon + b\,M^{1/\beta}$$
+  </div>
+
+  <p>where \(\varepsilon = (T - T_C)/T_C\) is the reduced temperature. The key universality classes to test are:</p>
+
+  <table class="article-table">
+    <tr>
+      <th>Model</th>
+      <th>\(\beta\)</th>
+      <th>\(\gamma\)</th>
+      <th>\(\delta\)</th>
+    </tr>
+    <tr>
+      <td>Mean-field</td>
+      <td>0.500</td>
+      <td>1.000</td>
+      <td>3.00</td>
+    </tr>
+    <tr>
+      <td>3D Heisenberg</td>
+      <td>0.365</td>
+      <td>1.386</td>
+      <td>4.80</td>
+    </tr>
+    <tr>
+      <td>3D Ising</td>
+      <td>0.325</td>
+      <td>1.241</td>
+      <td>4.82</td>
+    </tr>
+    <tr>
+      <td>3D XY</td>
+      <td>0.345</td>
+      <td>1.316</td>
+      <td>4.81</td>
+    </tr>
+    <tr>
+      <td>Tricritical mean-field</td>
+      <td>0.250</td>
+      <td>1.000</td>
+      <td>5.00</td>
+    </tr>
+  </table>
+
+  <p>The best-fit model is the one that produces the most linear and most parallel set of isotherms in the modified Arrott plot. This is typically assessed by the relative slope \(RS = S(T)/S(T_C)\), where values closest to unity across all temperatures indicate the best model.</p>
+
+  <div class="article-highlight">
+    <p>For manganite perovskites like Nd<sub>0.7</sub>Sr<sub>0.3</sub>MnO<sub>3</sub>, the tricritical mean-field model (\(\beta = 0.25\), \(\gamma = 1.0\)) often provides the best fit, indicating the system sits at the boundary between first-order and second-order behavior — exactly the tricritical point.</p>
+  </div>
+
+  <h2>5. The Iterative Method for Precise Exponents</h2>
+
+  <p>In practice, you rarely know the correct exponents beforehand. The standard approach is an iterative self-consistent procedure:</p>
+
+  <ol>
+    <li>Start with trial exponents from one of the models in the table above.</li>
+    <li>Construct the modified Arrott plot using \(M^{1/\beta}\) vs. \((H/M)^{1/\gamma}\).</li>
+    <li>Fit the linear high-field region of each isotherm.</li>
+    <li>Extract \(M_S(T)\) from the \(y\)-intercept and \(\chi_0^{-1}(T)\) from the \(x\)-intercept.</li>
+    <li>Fit \(M_S(T)\) near \(T_C\) to the power law \(M_S(T) \propto (T_C - T)^{\beta}\) to obtain a new \(\beta\).</li>
+    <li>Fit \(\chi_0^{-1}(T)\) above \(T_C\) to the power law \(\chi_0^{-1}(T) \propto (T - T_C)^{\gamma}\) to obtain a new \(\gamma\).</li>
+    <li>Use the new \(\beta\) and \(\gamma\) to reconstruct the modified Arrott plot.</li>
+    <li>Repeat until \(\beta\) and \(\gamma\) converge (typically 3–5 iterations are sufficient).</li>
+  </ol>
+
+  <p>The final converged values of \(\beta\) and \(\gamma\) reveal the universality class of the transition. You can then verify self-consistency by checking the Widom relation: \(\delta = 1 + \gamma/\beta\).</p>
+
+  <h2>6. Python Implementation</h2>
+
+  <p>Here is a minimal Python script to construct Arrott plots from raw \(M(H)\) data and perform the linear fits:</p>
+
+  <span class="code-label">Python — Arrott Plot Analysis</span>
+  <div class="code-block">
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np <br>
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt <br>
+<span class="keyword">from</span> scipy <span class="keyword">import</span> stats <br>
+
+<span class="comment"># Load your isothermal M(H) data</span> <br>
+<span class="comment"># Format: columns = [H, M_T1, M_T2, M_T3, ...]</span> <br>
+data = np.<span class="function">loadtxt</span>(<span class="string">'MH_isotherms.dat'</span>) <br>
+H = data[:, <span class="number">0</span>] <br>
+temperatures = [<span class="number">250</span>, <span class="number">255</span>, <span class="number">260</span>, <span class="number">265</span>, <span class="number">270</span>, <span class="number">275</span>]  <span class="comment"># K</span> <br>
+
+<span class="comment"># Critical exponents to try (tricritical mean-field)</span> <br>
+beta  = <span class="number">0.25</span> <br>
+gamma = <span class="number">1.0</span><br>
+
+fig, ax = plt.<span class="function">subplots</span>(figsize=(<span class="number">8</span>, <span class="number">6</span>))<br>
+
+<span class="keyword">for</span> i, T <span class="keyword">in</span> <span class="function">enumerate</span>(temperatures):<br>
+    M = data[:, i + <span class="number">1</span>]<br>
+    <br>
+    <span class="comment"># Modified Arrott axes: M^(1/beta) vs (H/M)^(1/gamma)</span><br>
+    x = (H / M) <span class="operator">**</span> (<span class="number">1</span> / gamma)<br>
+    y = M <span class="operator">**</span> (<span class="number">1</span> / beta)<br>
+    <br>
+    ax.<span class="function">plot</span>(x, y, <span class="string">'o-'</span>, markersize=<span class="number">3</span>, label=<span class="string">f'{T} K'</span>)<br>
+    <br>
+    <span class="comment"># Linear fit to high-field region (e.g., above 1 T)</span><br>
+    mask = H > <span class="number">10000</span><br>
+    slope, intercept, r, p, se = stats.<span class="function">linregress</span>(x[mask], y[mask])<br>
+    <span class="function">print</span>(<span class="string">f'T={T} K: slope={slope:.3f}, intercept={intercept:.3f}'</span>)<br>
+
+ax.<span class="function">set_xlabel</span>(<span class="string">r'$(H/M)^{1/\gamma}$'</span>, fontsize=<span class="number">12</span>)<br>
+ax.<span class="function">set_ylabel</span>(<span class="string">r'$M^{1/\beta}$'</span>, fontsize=<span class="number">12</span>)<br>
+ax.<span class="function">set_title</span>(<span class="string">'Modified Arrott Plot'</span>)<br>
+ax.<span class="function">legend</span>(fontsize=<span class="number">9</span>)<br>
+plt.<span class="function">tight_layout</span>()<br>
+plt.<span class="function">savefig</span>(<span class="string">'arrott_plot.png'</span>, dpi=<span class="number">150</span>)<br>
+plt.<span class="function">show</span>()<br>
+  </div>
+
+  <h2>7. Common Pitfalls to Avoid</h2>
+
+  <div class="warning-box">
+    <strong>&#9888; Pitfall #1: Fitting the Entire Curve</strong>
+    <p>Only the high-field linear region should be used for fitting. The low-field region is dominated by domain wall motion and magnetic domain effects that have nothing to do with the critical behavior. Including low-field data will give you wrong exponents.</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>&#9888; Pitfall #2: Insufficient Temperature Range</strong>
+    <p>You need isotherms both well below and well above \(T_C\). If all your data is on one side, you cannot properly determine \(T_C\) or extract both \(\beta\) and \(\gamma\). A good rule of thumb is to have at least 5 isotherms below and 5 above \(T_C\).</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>&#9888; Pitfall #3: Ignoring Demagnetization</strong>
+    <p>For samples with significant demagnetization factors (thin films, irregular shapes), the internal field \(H_\text{int} = H_\text{app} - NM\) can be significantly different from the applied field. Failing to correct for this will distort your Arrott plot and give incorrect exponents.</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>&#9888; Pitfall #4: Declaring Mean-Field by Default</strong>
+    <p>Many papers plot only the standard Arrott plot (\(M^2\) vs. \(H/M\)) and declare the transition "second-order" based on positive slopes. But positive slopes alone do not confirm the mean-field model. You must construct modified Arrott plots with different exponent sets and compare the linearity to determine the correct universality class.</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>&#9888; Pitfall #5: Not Checking Self-Consistency</strong>
+    <p>After extracting \(\beta\) and \(\gamma\), always verify with the Widom relation (\(\delta = 1 + \gamma/\beta\)) and the Rushbrooke equality (\(\alpha + 2\beta + \gamma = 2\)). If these are violated, your exponents are unreliable, and you should revisit the fitting range or reconsider whether the system is truly in the asymptotic critical regime.</p>
+  </div>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>8. Connecting to Magnetocaloric Analysis</h2>
+
+  <p>Arrott plot analysis is not just an academic exercise — it directly feeds into magnetocaloric calculations. Once you know the order of the transition and the critical exponents, you can use them to evaluate the magnetic entropy change \(\Delta S_M\) using the Maxwell relation:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Maxwell Relation</span>
+    $$\Delta S_M(T,\,H) = \int_0^{H} \left(\frac{\partial M}{\partial T}\right)_{\!H} dH$$
+  </div>
+
+  <p>For second-order transitions, \(\Delta S_M\) is fully reliable from the Maxwell relation. However, for first-order transitions, caution is needed because the discontinuity in magnetization can lead to spurious spikes in the calculated entropy change (the so-called "spike artifact"). The Arrott plot analysis tells you upfront whether you need to worry about this.</p>
+
+  <p>Furthermore, the critical exponents obtained from modified Arrott plots can be used to construct the universal curve of \(\Delta S_M\) — collapsing all entropy change data onto a single master curve when properly rescaled. This is one of the most elegant consistency checks available in magnetocaloric research.</p>
+
+  <div class="article-pullquote">
+    The beauty of Arrott plots is that they transform complex magnetization data into a visual language: straight lines mean understanding; curvature means there is more physics to uncover.
+  </div>
+
+  <h2>9. Summary and Checklist</h2>
+
+  <p>Before submitting your next paper with Arrott plot analysis, make sure you can check off every item on this list:</p>
+
+  <ul>
+    <li>Measured \(M(H)\) isotherms at close temperature intervals spanning both sides of \(T_C\)</li>
+    <li>Applied demagnetization corrections if needed for your sample geometry</li>
+    <li>Constructed the standard Arrott plot (\(M^2\) vs. \(H/M\)) and applied the Banerjee criterion</li>
+    <li>Tested multiple universality class models via modified Arrott plots</li>
+    <li>Selected the best model based on relative slope analysis (\(RS\) closest to 1)</li>
+    <li>Performed the iterative procedure to converge on self-consistent \(\beta\) and \(\gamma\)</li>
+    <li>Verified the Widom relation and Rushbrooke equality</li>
+    <li>Clearly reported \(T_C\), \(\beta\), \(\gamma\), \(\delta\) with uncertainties</li>
+    <li>Connected the results to the magnetocaloric entropy change analysis</li>
+  </ul>
+
+  <p>Arrott plots are deceptively simple to construct but remarkably deep in what they reveal. Getting them right means the difference between a routine measurement and genuine physical insight. Take the time, do it properly, and your reviewer — and your science — will thank you.</p>
+
+</article>
+
+<!-- ─── ARTICLE FOOTER ─── -->
+<div class="article-end">
+  <div class="article-end-divider"></div>
+
+  <div class="article-author">
+    <div class="article-author-avatar">
+      <img src="../images/profile.jpg" alt="Minh-Hieu Nguyen"
+           onerror="this.style.display='none'; this.parentElement.textContent='MH';">
+    </div>
+    <div class="article-author-info">
+      <h4>Minh-Hieu Nguyen</h4>
+      <p>Researcher at VNU-University of Engineering and Technology. Specializing in magnetocaloric materials, critical phenomena, and computational materials science.</p>
+    </div>
+  </div>
+
+  <div class="article-nav">
+    <a href="your-body-has-been-screaming.html">
+      <div class="article-nav-label">&#8592; Previous</div>
+      <div class="article-nav-title">Your Body Has Been Screaming</div>
+    </a>
+    <a href="building-a-nest.html" class="next">
+      <div class="article-nav-label">Next &#8594;</div>
+      <div class="article-nav-title">Building a Nest: My Desire for Marriage and Babies</div>
+    </a>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: April 2026</p>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+</script>
+</body>
+</html>
