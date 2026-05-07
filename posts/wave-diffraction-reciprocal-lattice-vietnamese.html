@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nhiễu xạ sóng và Mạng đảo — Minh-Hieu Nguyen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- KaTeX for professional math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });"></script>
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --sage: #4a6741;
+  --gold: #b8860b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--ink); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+
+.nav-links a {
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color 0.25s; position: relative;
+}
+
+.nav-links a::after {
+  content: ''; position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent); transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; background: none; border: none; padding: 4px;
+}
+.hamburger span { width: 24px; height: 2px; background: var(--ink); transition: 0.3s; }
+
+/* ─── ARTICLE HEADER ─── */
+.article-header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 140px 40px 0;
+}
+
+.article-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  margin-bottom: 40px; transition: color 0.25s;
+}
+.article-back:hover { color: var(--accent); }
+.article-back svg { transition: transform 0.25s; }
+.article-back:hover svg { transform: translateX(-4px); }
+
+.article-tag {
+  display: inline-block;
+  padding: 4px 14px; border-radius: 4px;
+  font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(139,37,0,0.08); color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.article-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 700;
+  line-height: 1.15; letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.article-meta {
+  display: flex; align-items: center; gap: 20px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-meta-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; color: var(--muted);
+}
+
+.article-meta-divider {
+  width: 4px; height: 4px;
+  border-radius: 50%; background: var(--border);
+}
+
+/* ─── COVER ─── */
+.article-cover {
+  max-width: 720px;
+  margin: 48px auto;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 45%, #274f7a 100%);
+}
+
+.article-cover-pattern {
+  position: absolute; inset: 0;
+  opacity: 0.12;
+  background-image:
+    radial-gradient(circle at 20% 30%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 50% 20%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 80% 30%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 20% 70%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 50% 80%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 80% 70%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 35% 50%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 65% 50%, white 1.5px, transparent 1.5px);
+  background-size: 80px 80px;
+}
+
+/* Ewald sphere decoration */
+.article-cover-svg {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 48px; opacity: 0.15;
+}
+
+.article-cover-text {
+  position: absolute;
+  bottom: 36px; left: 36px; right: 240px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; font-style: italic;
+  color: rgba(255,255,255,0.75); line-height: 1.35;
+}
+
+/* ─── ARTICLE BODY ─── */
+.article-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+  text-align: justify;
+}
+
+.article-body p {
+  margin-bottom: 24px;
+  font-size: 1.06rem;
+  line-height: 1.9;
+  text-align: justify;
+}
+
+.article-body p:first-of-type::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem; float: left;
+  line-height: 0.75;
+  margin-right: 10px; margin-top: 8px;
+  color: var(--accent); font-weight: 700;
+}
+
+.article-body h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 700;
+  margin: 48px 0 20px;
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.article-body h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem; font-weight: 700;
+  margin: 36px 0 14px;
+  line-height: 1.3;
+  color: var(--ink);
+  text-align: left;
+}
+
+.article-body em { color: var(--muted); font-style: italic; }
+.article-body strong { color: var(--ink); font-weight: 700; }
+
+.article-body ul, .article-body ol {
+  margin: 0 0 24px 24px;
+  text-align: left;
+}
+
+.article-body li {
+  margin-bottom: 8px;
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.article-body li::marker { color: var(--accent); }
+
+/* Highlight box */
+.article-highlight {
+  border-left: 3px solid var(--accent);
+  padding: 24px 28px;
+  margin: 36px 0;
+  background: var(--cream);
+  border-radius: 0 8px 8px 0;
+}
+
+.article-highlight p {
+  margin-bottom: 0 !important;
+  font-size: 1.02rem;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.8;
+}
+
+/* Separator */
+.article-separator {
+  text-align: center;
+  margin: 44px 0;
+  color: var(--border);
+  font-size: 1.4rem;
+  letter-spacing: 12px;
+}
+
+/* Pull quote */
+.article-pullquote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; font-style: italic;
+  color: var(--accent);
+  text-align: center;
+  padding: 36px 20px;
+  margin: 44px 0;
+  line-height: 1.4;
+  position: relative;
+}
+
+.article-pullquote::before,
+.article-pullquote::after {
+  content: ''; display: block;
+  width: 60px; height: 1.5px;
+  background: var(--accent);
+  margin: 0 auto 20px; opacity: 0.4;
+}
+.article-pullquote::after { margin: 20px auto 0; }
+
+/* Equation box — KaTeX aware */
+.equation-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin: 28px 0;
+  text-align: center;
+}
+
+.equation-box .eq-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.equation-box .katex-display { margin: 0; }
+.katex { font-size: 1.05em; }
+
+/* Table */
+.article-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 28px 0;
+  font-size: 0.95rem;
+}
+
+.article-table th {
+  background: var(--cream);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
+}
+
+.article-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+}
+
+.article-table td:first-child {
+  text-align: left;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.article-table tr:hover td {
+  background: rgba(243,240,232,0.4);
+}
+
+/* Warning box */
+.warning-box {
+  background: #fff8f0;
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px;
+  margin: 28px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.warning-box strong {
+  color: var(--gold);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.warning-box p {
+  margin-bottom: 0 !important;
+  font-size: 0.98rem;
+}
+
+/* ─── ARTICLE FOOTER ─── */
+.article-end {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+}
+
+.article-end-divider {
+  height: 1px; background: var(--border);
+  margin-bottom: 40px;
+}
+
+.article-author {
+  display: flex; align-items: center;
+  gap: 20px; margin-bottom: 40px;
+}
+
+.article-author-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--accent); flex-shrink: 0;
+  overflow: hidden;
+}
+
+.article-author-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.article-author-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 700;
+}
+
+.article-author-info p {
+  font-size: 0.88rem; color: var(--muted);
+}
+
+.article-nav {
+  display: flex; justify-content: space-between;
+  gap: 20px;
+}
+
+.article-nav a {
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none; color: var(--ink);
+  transition: all 0.25s; flex: 1;
+}
+
+.article-nav a:hover {
+  border-color: var(--accent);
+  background: rgba(139,37,0,0.02);
+}
+
+.article-nav-label {
+  font-size: 0.78rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  font-weight: 600; margin-bottom: 4px;
+}
+
+.article-nav-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 700; line-height: 1.3;
+}
+
+.article-nav .next { text-align: right; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px; text-align: center;
+}
+
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+
+.footer-social {
+  display: flex; justify-content: center;
+  gap: 24px; margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none; transition: all 0.3s; font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light); color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p { font-size: 0.85rem; line-height: 1.6; }
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* Animations */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.7s ease forwards;
+}
+.fade-in-delay { animation-delay: 0.15s; }
+.fade-in-delay-2 { animation-delay: 0.3s; }
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .article-header h1 { font-size: 2.2rem; }
+  .article-cover { height: 220px; margin: 36px 20px; }
+  .article-cover-text { font-size: 1.2rem; bottom: 24px; left: 24px; right: 180px; }
+}
+
+@media (max-width: 640px) {
+  .article-header { padding: 100px 20px 0; }
+  .article-body { padding: 0 20px 60px; }
+  .article-end { padding: 0 20px 60px; }
+  .article-header h1 { font-size: 1.9rem; }
+  .article-cover { height: 200px; }
+  .article-cover-text { font-size: 1rem; bottom: 20px; left: 20px; right: 20px; }
+  .article-body p { font-size: 1rem; }
+  .article-body h2 { font-size: 1.5rem; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  nav.menu-open .nav-links {
+    display: flex; flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .article-nav { flex-direction: column; }
+  .article-nav .next { text-align: left; }
+  .article-meta { flex-wrap: wrap; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../research.html">Research</a></li>
+      <li><a href="../publications.html">Publications</a></li>
+      <li><a href="../cv.html">CV</a></li>
+      <li><a href="../blog.html" class="active">Blog</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── ARTICLE HEADER ─── -->
+<header class="article-header fade-in">
+  <a href="../blog.html" class="article-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    Quay lại tất cả bài viết
+  </a>
+  <span class="article-tag">Research</span>
+  <h1>Nhiễu xạ sóng và Mạng đảo: Ngôn ngữ tự nhiên của tinh thể học</h1>
+  <div class="article-meta">
+    <span class="article-meta-item">Minh-Hieu Nguyen</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">Tháng 5, 2026</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">15 phút đọc</span>
+  </div>
+</header>
+
+<!-- ─── COVER ─── -->
+<div class="article-cover fade-in fade-in-delay">
+  <div class="article-cover-pattern"></div>
+  <div class="article-cover-text">"Giản đồ nhiễu xạ không vẽ nguyên tử — nó vẽ mạng đảo của chúng."</div>
+</div>
+
+<!-- ─── ARTICLE BODY ─── -->
+<article class="article-body fade-in fade-in-delay-2">
+
+  <p>Tại sao tia X "thấy" được cấu trúc bên trong tinh thể, trong khi ánh sáng thường — dù rực rỡ hơn nhiều — lại chỉ trượt qua bề mặt? Câu trả lời không nằm ở cường độ hay màu sắc, mà nằm ở một con số rất đơn giản: bước sóng. Ánh sáng nhìn thấy có bước sóng cỡ 5000 Å — quá lớn để "cảm nhận" khoảng cách giữa các nguyên tử, chỉ vài angström. Tia X, với bước sóng từ 0.5 đến vài Å, lại vừa khít với thước đo của thế giới tinh thể. Và khi kích thước sóng tương đương với khoảng cách lặp lại của cấu trúc, nhiễu xạ (diffraction) xảy ra — mang theo toàn bộ thông tin về sự sắp xếp của nguyên tử bên trong.</p>
+
+  <p>Chương 2 của Kittel "Introduction to Solid State Physics" xây dựng toàn bộ ngôn ngữ toán học để mô tả hiện tượng này: từ định luật Bragg trực quan, qua phân tích Fourier, đến mạng đảo (reciprocal lattice) — công cụ mạnh nhất mà vật lý chất rắn có trong tay. Bài này viết lại hành trình đó, ưu tiên intuition vật lý trước công thức.</p>
+
+  <h2>1. Định luật Bragg: Khi gương không hoàn hảo lại tốt hơn</h2>
+
+  <p>W. L. Bragg đưa ra lời giải thích đầu tiên vào năm 1912 bằng một hình ảnh cực kỳ trực quan: hãy nghĩ mỗi mặt phẳng nguyên tử trong tinh thể như một gương bán trong suốt — chỉ phản xạ một phần rất nhỏ bức xạ tới (khoảng \(10^{-3}\) đến \(10^{-5}\)), phần còn lại xuyên qua tới mặt phẳng tiếp theo. Khi các phản xạ từ nhiều mặt phẳng song song chồng chất nhau đúng pha — tức là hiệu đường đi bằng một số nguyên lần bước sóng — ta có chùm nhiễu xạ mạnh.</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Định luật Bragg — Phương trình (1) trong Kittel</span>
+    $$2d\sin\theta = n\lambda$$
+  </div>
+
+  <p>Ở đây \(d\) là khoảng cách giữa các mặt phẳng nguyên tử song song, \(\theta\) là góc tới đo từ mặt phẳng (không phải từ pháp tuyến như trong quang học thông thường), \(\lambda\) là bước sóng, và \(n\) là bậc nhiễu xạ — một số nguyên dương. Điều kiện \(\lambda \leq 2d\) ngay lập tức cho ta thấy tại sao ánh sáng thường không thể nhiễu xạ từ mặt phẳng nguyên tử: với \(d \sim 2\text{ Å}\), cần \(\lambda \leq 4\text{ Å}\), tức là phải dùng tia X hoặc neutron nhiệt hoặc electron năng lượng cao.</p>
+
+  <div class="article-highlight">
+    <p>Định luật Bragg cho ta biết <em>khi nào</em> có nhiễu xạ — tức là điều kiện về góc và bước sóng. Nhưng nó không giải thích <em>tại sao</em> điều kiện đó tương đương với tính tuần hoàn của mạng tinh thể. Để hiểu điều đó, ta cần phân tích Fourier.</p>
+  </div>
+
+  <p>Một điểm tinh tế thường bị bỏ qua: các "mặt phẳng phản xạ" trong định luật Bragg không nhất thiết phải là mặt phẳng bề mặt của mẫu vật lý. Chúng là các mặt phẳng nguyên tử bất kỳ bên trong tinh thể, xác định bởi chỉ số Miller (hkl). Khi ta quay tinh thể trong chùm tia X, ta lần lượt đưa các bộ mặt phẳng khác nhau vào điều kiện Bragg.</p>
+
+  <h2>2. Mạng đảo: Khi Fourier gặp tinh thể học</h2>
+
+  <p>Bước nhảy lớn từ định luật Bragg sang lý thuyết tán xạ đầy đủ bắt đầu từ một nhận xét đơn giản: mật độ electron \(n(\mathbf{r})\) trong tinh thể là hàm tuần hoàn theo các vector cơ sở \(\mathbf{a}_1, \mathbf{a}_2, \mathbf{a}_3\) của mạng. Bất kỳ hàm tuần hoàn nào cũng có thể khai triển thành chuỗi Fourier. Trong ba chiều, khai triển đó có dạng:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Khai triển Fourier của mật độ electron — Phương trình (9)</span>
+    $$n(\mathbf{r}) = \sum_{\mathbf{G}} n_{\mathbf{G}} \exp(i\mathbf{G} \cdot \mathbf{r})$$
+  </div>
+
+  <p>Câu hỏi then chốt: tập hợp các vector \(\mathbf{G}\) được phép trong khai triển này là gì? Điều kiện là \(n(\mathbf{r} + \mathbf{T}) = n(\mathbf{r})\) với mọi vector tịnh tiến mạng \(\mathbf{T} = u_1\mathbf{a}_1 + u_2\mathbf{a}_2 + u_3\mathbf{a}_3\). Điều đó đòi hỏi \(\exp(i\mathbf{G} \cdot \mathbf{T}) = 1\), tức là \(\mathbf{G} \cdot \mathbf{T} = 2\pi \times \text{(số nguyên)}\) với mọi vector mạng \(\mathbf{T}\).</p>
+
+  <p>Tập hợp tất cả các vector \(\mathbf{G}\) thỏa mãn điều kiện này lập thành một mạng riêng — đó chính là <strong>mạng đảo (reciprocal lattice)</strong>. Các vector cơ sở \(\mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\) của mạng đảo được định nghĩa như sau:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Các vector cơ sở mạng đảo — Phương trình (13)</span>
+    $$\mathbf{b}_1 = 2\pi\frac{\mathbf{a}_2 \times \mathbf{a}_3}{\mathbf{a}_1 \cdot \mathbf{a}_2 \times \mathbf{a}_3}, \quad \mathbf{b}_2 = 2\pi\frac{\mathbf{a}_3 \times \mathbf{a}_1}{\mathbf{a}_1 \cdot \mathbf{a}_2 \times \mathbf{a}_3}, \quad \mathbf{b}_3 = 2\pi\frac{\mathbf{a}_1 \times \mathbf{a}_2}{\mathbf{a}_1 \cdot \mathbf{a}_2 \times \mathbf{a}_3}$$
+  </div>
+
+  <p>Tính chất quan trọng nhất: \(\mathbf{b}_i \cdot \mathbf{a}_j = 2\pi\delta_{ij}\), tức là mỗi vector cơ sở mạng đảo vuông góc với hai vector cơ sở mạng thực còn lại. Mọi vector mạng đảo có dạng \(\mathbf{G} = v_1\mathbf{b}_1 + v_2\mathbf{b}_2 + v_3\mathbf{b}_3\) với \(v_1, v_2, v_3\) nguyên.</p>
+
+  <div class="article-highlight">
+    <p>Hãy nghĩ về mạng đảo như phổ tần số của một tín hiệu tuần hoàn. Mạng thực ↔ mạng đảo chính xác như tín hiệu thời gian ↔ phổ tần số trong phép biến đổi Fourier. Tinh thể trong không gian thực có bước lặp \(a\) — mạng đảo của nó có bước \(2\pi/a\). Cấu trúc tinh thể càng dày đặc (a nhỏ), mạng đảo càng thưa (b lớn), và ngược lại.</p>
+  </div>
+
+  <h2>3. Điều kiện nhiễu xạ và phương trình Laue</h2>
+
+  <p>Với mạng đảo trong tay, ta có thể viết điều kiện nhiễu xạ một cách chính xác. Biên độ tán xạ toàn phần tỉ lệ với tích phân:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Biên độ tán xạ — Phương trình (18)</span>
+    $$F = \int dV\, n(\mathbf{r})\, e^{i\Delta\mathbf{k} \cdot \mathbf{r}}, \quad \text{với } \Delta\mathbf{k} = \mathbf{k}' - \mathbf{k}$$
+  </div>
+
+  <p>Khi thay khai triển Fourier của \(n(\mathbf{r})\) vào và tính tích phân, ta thấy \(F\) chỉ khác không đáng kể khi \(\Delta\mathbf{k} = \mathbf{G}\) — tức là khi vector tán xạ bằng đúng một vector mạng đảo. Đây là <strong>điều kiện nhiễu xạ (diffraction condition)</strong>:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Điều kiện nhiễu xạ — Phương trình (21) và (23)</span>
+    $$\Delta\mathbf{k} = \mathbf{G} \qquad \Longleftrightarrow \qquad 2\mathbf{k} \cdot \mathbf{G} = G^2$$
+  </div>
+
+  <p>Phương trình \(2\mathbf{k} \cdot \mathbf{G} = G^2\) là dạng thường gặp nhất trong các bài toán vùng Brillouin. Có thể chứng minh nó hoàn toàn tương đương với định luật Bragg: khoảng cách giữa các mặt phẳng (hkl) là \(d(hkl) = 2\pi/|\mathbf{G}|\), và thay vào sẽ thu lại phương trình \(2d\sin\theta = n\lambda\).</p>
+
+  <p>Phương trình Laue (Laue equations) là cách phát biểu tương đương thứ ba, thu được bằng cách lấy tích vô hướng của điều kiện \(\Delta\mathbf{k} = \mathbf{G}\) lần lượt với \(\mathbf{a}_1, \mathbf{a}_2, \mathbf{a}_3\):</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Phương trình Laue — Phương trình (25)</span>
+    $$\mathbf{a}_1 \cdot \Delta\mathbf{k} = 2\pi v_1, \qquad \mathbf{a}_2 \cdot \Delta\mathbf{k} = 2\pi v_2, \qquad \mathbf{a}_3 \cdot \Delta\mathbf{k} = 2\pi v_3$$
+  </div>
+
+  <p>Ý nghĩa hình học đẹp đẽ: mỗi phương trình xác định \(\Delta\mathbf{k}\) nằm trên một hình nón xung quanh trục \(\mathbf{a}_i\). Để có nhiễu xạ, \(\Delta\mathbf{k}\) phải đồng thời thỏa mãn cả ba — tức là nằm trên giao tuyến của ba hình nón. Đây là điều kiện rất ngặt, giải thích tại sao thực nghiệm nhiễu xạ đơn tinh thể đòi hỏi phải quét góc hoặc bước sóng một cách có hệ thống.</p>
+
+  <div class="article-separator">· · ·</div>
+
+  <p>Tổng kết ba cách phát biểu điều kiện nhiễu xạ — hoàn toàn tương đương về mặt vật lý:</p>
+
+  <table class="article-table">
+    <tr>
+      <th>Phát biểu</th>
+      <th>Phương trình</th>
+      <th>Nhấn mạnh</th>
+    </tr>
+    <tr>
+      <td>Định luật Bragg</td>
+      <td>\(2d\sin\theta = n\lambda\)</td>
+      <td>Hình học, trực quan</td>
+    </tr>
+    <tr>
+      <td>Điều kiện mạng đảo</td>
+      <td>\(\Delta\mathbf{k} = \mathbf{G}\)</td>
+      <td>Fourier, không gian đảo</td>
+    </tr>
+    <tr>
+      <td>Phương trình Laue</td>
+      <td>\(\mathbf{a}_i \cdot \Delta\mathbf{k} = 2\pi v_i\)</td>
+      <td>Hình học nón, thực nghiệm</td>
+    </tr>
+  </table>
+
+  <h2>4. Vùng Brillouin: Từ nhiễu xạ đến vật lý chất rắn</h2>
+
+  <p>Vùng Brillouin (Brillouin zone) được xây dựng từ mạng đảo theo cách hoàn toàn tương tự với ô Wigner–Seitz trong mạng thực: chọn gốc tọa độ tại một nút mạng đảo, vẽ các đoạn thẳng nối đến tất cả các nút lân cận, rồi dựng mặt phẳng trung trực vuông góc với mỗi đoạn thẳng đó. Vùng không gian nhỏ nhất bao quanh gốc, giới hạn bởi các mặt phẳng này, là <strong>vùng Brillouin thứ nhất (first Brillouin zone)</strong>.</p>
+
+  <p>Điều kiện nhiễu xạ \(2\mathbf{k} \cdot \mathbf{G} = G^2\) có thể viết lại thành \(\mathbf{k} \cdot (\tfrac{1}{2}\mathbf{G}) = (\tfrac{1}{2}G)^2\), nghĩa là: một sóng bị nhiễu xạ khi và chỉ khi đầu mút của vector sóng \(\mathbf{k}\) nằm trên mặt phẳng trung trực của một vector mạng đảo — tức là nằm trên biên của vùng Brillouin. Mọi vector \(\mathbf{k}\) kết thúc tại biên vùng đều bị nhiễu xạ Bragg.</p>
+
+  <table class="article-table">
+    <tr>
+      <th>Mạng tinh thể</th>
+      <th>Vùng Brillouin thứ nhất</th>
+    </tr>
+    <tr>
+      <td>Simple cubic (sc)</td>
+      <td>Hình lập phương (cube)</td>
+    </tr>
+    <tr>
+      <td>Body-centered cubic (bcc)</td>
+      <td>Rhombic dodecahedron (12 mặt)</td>
+    </tr>
+    <tr>
+      <td>Face-centered cubic (fcc)</td>
+      <td>Truncated octahedron (14 mặt)</td>
+    </tr>
+  </table>
+
+  <div class="article-highlight">
+    <p>Vùng Brillouin xuất hiện ban đầu từ lý thuyết nhiễu xạ, nhưng tầm quan trọng thực sự của nó vượt xa bối cảnh đó: vùng Brillouin là đơn vị cơ bản để mô tả cấu trúc vùng năng lượng electron, phân tán phonon, và hầu hết các kích thích sơ cấp trong vật rắn. Mọi tính chất điện, quang, nhiệt của vật liệu đều được hiểu qua lăng kính của không gian này.</p>
+  </div>
+
+  <h2>5. Nhân tố cấu trúc \(S_{\mathbf{G}}\): Bragg nói "hướng", \(S_{\mathbf{G}}\) nói "cường độ"</h2>
+
+  <p>Định luật Bragg xác định <em>góc nào</em> có nhiễu xạ — nhưng không nói gì về <em>cường độ</em> của chùm nhiễu xạ. Điều đó phụ thuộc vào sự phân bố electron bên trong mỗi ô đơn vị, được mã hóa trong <strong>nhân tố cấu trúc (structure factor)</strong>:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Nhân tố cấu trúc — Phương trình (46)</span>
+    $$S_{\mathbf{G}}(v_1 v_2 v_3) = \sum_{j} f_j \exp\!\left[i2\pi(v_1 x_j + v_2 y_j + v_3 z_j)\right]$$
+  </div>
+
+  <p>Ở đây, tổng chạy qua tất cả nguyên tử \(j\) trong ô đơn vị, \(f_j\) là <strong>nhân tố dạng nguyên tử (atomic form factor)</strong> — tỉ số giữa biên độ tán xạ của nguyên tử thực và của một electron điểm — còn \((x_j, y_j, z_j)\) là tọa độ phân số của nguyên tử trong ô đơn vị. Nhân tố cấu trúc có thể bằng không cho một số phản xạ, dẫn đến <strong>quy tắc tắt (systematic absences)</strong>.</p>
+
+  <h3>Quy tắc tắt của mạng bcc</h3>
+
+  <p>Mạng bcc có hai nguyên tử trong ô lập phương quy ước: một tại \((0,0,0)\) và một tại \((\tfrac{1}{2},\tfrac{1}{2},\tfrac{1}{2})\). Nhân tố cấu trúc:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Nhân tố cấu trúc bcc</span>
+    $$S(v_1 v_2 v_3) = f\left\{1 + \exp\!\left[i\pi(v_1 + v_2 + v_3)\right]\right\}$$
+  </div>
+
+  <p>Khi \(v_1 + v_2 + v_3\) là số lẻ, số hạng mũ bằng \(-1\) và \(S = 0\): phản xạ bị tắt hoàn toàn. Khi \(v_1 + v_2 + v_3\) là số chẵn, \(S = 2f\). Vì vậy giản đồ nhiễu xạ của kim loại Natri (cấu trúc bcc) không có vạch (100), (300), (111), (221) — nhưng có (200), (110), (222).</p>
+
+  <p>Giải thích vật lý: phản xạ (100) tương ứng với hiệu pha \(2\pi\) giữa phản xạ từ hai mặt phẳng biên của ô lập phương. Nhưng mạng bcc còn có mặt phẳng nguyên tử ở giữa — cách mặt thứ nhất đúng nửa khoảng cách — nên phản xạ từ mặt giữa lệch pha \(\pi\) và triệt tiêu hoàn toàn phản xạ của mặt ngoài.</p>
+
+  <h3>Quy tắc tắt của mạng fcc và ví dụ KCl vs KBr</h3>
+
+  <p>Mạng fcc có bốn nguyên tử trong ô lập phương: \((0,0,0)\), \((0,\tfrac{1}{2},\tfrac{1}{2})\), \((\tfrac{1}{2},0,\tfrac{1}{2})\), \((\tfrac{1}{2},\tfrac{1}{2},0)\). Nhân tố cấu trúc triệt tiêu khi các chỉ số \(v_1, v_2, v_3\) có cả chẵn lẫn lẻ — tức là chỉ cho phản xạ khi tất cả đều chẵn hoặc tất cả đều lẻ.</p>
+
+  <div class="warning-box">
+    <strong>⚠ Ví dụ kinh điển: KCl vs KBr</strong>
+    <p>Cả KCl và KBr đều có cấu trúc fcc, nhưng giản đồ nhiễu xạ tia X của chúng trông rất khác nhau. Trong KCl, ion K⁺ có 18 electron và Cl⁻ cũng có 18 electron — nhân tố dạng nguyên tử của chúng gần bằng nhau (\(f_K \approx f_{Cl}\)), khiến tinh thể "trông như" một mạng sc đơn giản với hằng số mạng \(a/2\). Tất cả phản xạ có chỉ số hỗn hợp chẵn/lẻ (đáng lẽ bị tắt trong fcc) gần như biến mất. Trong KBr, Br⁻ có 36 electron — nhân tố dạng của nó rất khác K⁺, nên tất cả phản xạ của mạng fcc đều xuất hiện rõ ràng.</p>
+  </div>
+
+  <div class="article-pullquote">
+    Giản đồ nhiễu xạ là bản đồ của mạng đảo — không phải ảnh chụp mạng thực. Học cách đọc nó là học một ngôn ngữ mới.
+  </div>
+
+  <h2>6. Bức tranh thống nhất</h2>
+
+  <p>Sau hành trình từ định luật Bragg đơn giản đến nhân tố cấu trúc phức tạp, ta có thể nhìn lại bức tranh tổng thể: tính tuần hoàn của mạng tinh thể tạo ra mạng đảo trong không gian Fourier. Mọi điều kiện nhiễu xạ — dù phát biểu theo ngôn ngữ của Bragg, Laue, hay vùng Brillouin — đều là cách diễn đạt khác nhau của cùng một sự thật: <em>nhiễu xạ xảy ra khi vector tán xạ trùng với vector mạng đảo</em>. Giản đồ nhiễu xạ không vẽ nguyên tử — nó vẽ mạng đảo, với cường độ mỗi điểm phản ánh sự phân bố electron bên trong ô đơn vị qua nhân tố cấu trúc.</p>
+
+  <p>Đây là nền tảng cho toàn bộ tinh thể học tia X — và cũng là cửa ngõ dẫn vào các chương tiếp theo của Kittel: vùng năng lượng electron (Chương 7) được xây dựng hoàn toàn trong không gian mạng đảo, phonon (Chương 4) được mô tả bằng vector sóng \(\mathbf{q}\) cũng trong không gian đó, và hầu hết các tính chất vật lý của vật rắn đều được phân tích qua lăng kính của vùng Brillouin.</p>
+
+  <h2>7. Gợi ý đọc thêm và bài tập</h2>
+
+  <p>Nếu bạn muốn đi sâu hơn, Chương 4 (Phonon I) sẽ áp dụng trực tiếp khái niệm mạng đảo và vùng Brillouin cho dao động mạng, trong khi Chương 7 (Năng lượng Fermi — vùng năng lượng) mở rộng sang cấu trúc vùng điện tử. Từ bài tập trong Chương 2, tôi đặc biệt gợi ý: Bài 1 (khoảng cách mặt phẳng — luyện kết nối \(\mathbf{G}\) và \(d\)), Bài 4 (độ rộng cực đại nhiễu xạ — hiểu giới hạn tinh thể hữu hạn), và Bài 5 (nhân tố cấu trúc kim cương — áp dụng quy tắc tắt cho cấu trúc phức tạp hơn).</p>
+
+</article>
+
+<!-- ─── ARTICLE FOOTER ─── -->
+<div class="article-end">
+  <div class="article-end-divider"></div>
+
+  <div class="article-author">
+    <div class="article-author-avatar">
+      <img src="../images/profile.jpg" alt="Minh-Hieu Nguyen"
+           onerror="this.style.display='none'; this.parentElement.textContent='MH';">
+    </div>
+    <div class="article-author-info">
+      <h4>Minh-Hieu Nguyen</h4>
+      <p>Nghiên cứu sinh và giảng viên tại VNU-University of Engineering and Technology. Nghiên cứu về hiệu ứng từ nhiệt, ứng xử tới hạn, và khoa học vật liệu tính toán.</p>
+    </div>
+  </div>
+
+  <div class="article-nav">
+    <a href="arrott-plots-guide.html">
+      <div class="article-nav-label">← Bài trước</div>
+      <div class="article-nav-title">Understanding Arrott Plots: A Practical Guide for Experimentalists</div>
+    </a>
+    <a href="#" class="next">
+      <div class="article-nav-label">Bài tiếp →</div>
+      <div class="article-nav-title">Bài tiếp theo</div>
+    </a>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: May 2026</p>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+</script>
+</body>
+</html>

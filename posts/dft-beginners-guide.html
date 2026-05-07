@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Density Functional Theory: A Gentle Introduction — Minh-Hieu Nguyen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- KaTeX for professional math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });"></script>
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --sage: #4a6741;
+  --gold: #b8860b;
+  --blue: #2c5282;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--ink); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+
+.nav-links a {
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color 0.25s; position: relative;
+}
+
+.nav-links a::after {
+  content: ''; position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent); transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; background: none; border: none; padding: 4px;
+}
+.hamburger span { width: 24px; height: 2px; background: var(--ink); transition: 0.3s; }
+
+/* ─── ARTICLE HEADER ─── */
+.article-header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 140px 40px 0;
+}
+
+.article-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  margin-bottom: 40px; transition: color 0.25s;
+}
+.article-back:hover { color: var(--accent); }
+.article-back svg { transition: transform 0.25s; }
+.article-back:hover svg { transform: translateX(-4px); }
+
+.article-tag {
+  display: inline-block;
+  padding: 4px 14px; border-radius: 4px;
+  font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(139,37,0,0.08); color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.article-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 700;
+  line-height: 1.15; letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.article-meta {
+  display: flex; align-items: center; gap: 20px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-meta-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; color: var(--muted);
+}
+
+.article-meta-divider {
+  width: 4px; height: 4px;
+  border-radius: 50%; background: var(--border);
+}
+
+/* ─── COVER ─── */
+.article-cover {
+  max-width: 720px;
+  margin: 48px auto;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 30%, #2c5282 70%, #4a7fb5 100%);
+}
+
+.article-cover-pattern {
+  position: absolute; inset: 0;
+  opacity: 0.06;
+  background-image:
+    radial-gradient(circle at 20% 30%, white 1px, transparent 1px),
+    radial-gradient(circle at 70% 20%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 40% 70%, white 1px, transparent 1px),
+    radial-gradient(circle at 80% 60%, white 1px, transparent 1px),
+    radial-gradient(circle at 15% 80%, white 0.8px, transparent 0.8px),
+    radial-gradient(circle at 60% 45%, white 1.2px, transparent 1.2px);
+  background-size: 50px 50px;
+}
+
+/* Electron orbital decorative element */
+.article-cover::before {
+  content: '';
+  position: absolute;
+  width: 200px; height: 200px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.article-cover::after {
+  content: '';
+  position: absolute;
+  width: 140px; height: 280px;
+  border: 1.5px solid rgba(255,255,255,0.06);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(60deg);
+}
+
+.article-cover-text {
+  position: absolute;
+  bottom: 36px; left: 36px; right: 36px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 600; font-style: italic;
+  color: rgba(255,255,255,0.7); line-height: 1.3;
+  z-index: 1;
+}
+
+/* ─── ARTICLE BODY ─── */
+.article-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+  text-align: justify;
+}
+
+.article-body p {
+  margin-bottom: 24px;
+  font-size: 1.06rem;
+  line-height: 1.9;
+  text-align: justify;
+}
+
+.article-body p:first-of-type::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem; float: left;
+  line-height: 0.75;
+  margin-right: 10px; margin-top: 8px;
+  color: var(--accent); font-weight: 700;
+}
+
+.article-body h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 700;
+  margin: 48px 0 20px;
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.article-body h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem; font-weight: 700;
+  margin: 36px 0 14px;
+  line-height: 1.3;
+  color: var(--ink);
+  text-align: left;
+}
+
+.article-body em { color: var(--muted); font-style: italic; }
+.article-body strong { color: var(--ink); font-weight: 700; }
+
+.article-body ul, .article-body ol {
+  margin: 0 0 24px 24px;
+  text-align: left;
+}
+
+.article-body li {
+  margin-bottom: 8px;
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.article-body li::marker {
+  color: var(--accent);
+}
+
+/* Highlight box */
+.article-highlight {
+  border-left: 3px solid var(--accent);
+  padding: 24px 28px;
+  margin: 36px 0;
+  background: var(--cream);
+  border-radius: 0 8px 8px 0;
+}
+
+.article-highlight p {
+  margin-bottom: 0 !important;
+  font-size: 1.02rem;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.8;
+}
+
+/* Key Insight box */
+.insight-box {
+  border-left: 3px solid var(--sage);
+  padding: 24px 28px;
+  margin: 36px 0;
+  background: #f0f5ee;
+  border-radius: 0 8px 8px 0;
+}
+
+.insight-box strong {
+  color: var(--sage);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.insight-box p {
+  margin-bottom: 0 !important;
+  font-size: 1.02rem;
+  color: var(--ink);
+  line-height: 1.8;
+}
+
+/* Separator */
+.article-separator {
+  text-align: center;
+  margin: 44px 0;
+  color: var(--border);
+  font-size: 1.4rem;
+  letter-spacing: 12px;
+}
+
+/* Pull quote */
+.article-pullquote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; font-style: italic;
+  color: var(--accent);
+  text-align: center;
+  padding: 36px 20px;
+  margin: 44px 0;
+  line-height: 1.4;
+  position: relative;
+}
+
+.article-pullquote::before,
+.article-pullquote::after {
+  content: ''; display: block;
+  width: 60px; height: 1.5px;
+  background: var(--accent);
+  margin: 0 auto 20px; opacity: 0.4;
+}
+.article-pullquote::after { margin: 20px auto 0; }
+
+/* Equation box — KaTeX aware */
+.equation-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin: 28px 0;
+  text-align: center;
+}
+
+.equation-box .eq-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.equation-box .katex-display { margin: 0; }
+
+/* Inline KaTeX */
+.katex { font-size: 1.05em; }
+
+/* Table */
+.article-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 28px 0;
+  font-size: 0.95rem;
+}
+
+.article-table th {
+  background: var(--cream);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
+}
+
+.article-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+}
+
+.article-table td:first-child {
+  text-align: left;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.article-table tr:hover td {
+  background: rgba(243,240,232,0.4);
+}
+
+/* Warning box */
+.warning-box {
+  background: #fff8f0;
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px;
+  margin: 28px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.warning-box strong {
+  color: var(--gold);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.warning-box p {
+  margin-bottom: 0 !important;
+  font-size: 0.98rem;
+}
+
+/* Comparison box */
+.comparison-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+
+.comparison-box .box-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+/* Step box */
+.step-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+  margin: 28px 0;
+  position: relative;
+}
+
+.step-number {
+  position: absolute;
+  top: -14px; left: 24px;
+  background: var(--accent);
+  color: white;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 700;
+}
+
+.step-box h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700;
+  margin-bottom: 10px;
+  padding-top: 4px;
+}
+
+.step-box p {
+  margin-bottom: 12px !important;
+  font-size: 0.98rem;
+}
+
+/* Decision flowchart */
+.flowchart {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+  margin: 28px 0;
+}
+
+.flowchart-item {
+  display: flex; gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.flowchart-item:last-child { margin-bottom: 0; }
+
+.flowchart-arrow {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.flowchart-text {
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.flowchart-text strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+}
+
+/* ─── ARTICLE FOOTER ─── */
+.article-end {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+}
+
+.article-end-divider {
+  height: 1px; background: var(--border);
+  margin-bottom: 40px;
+}
+
+.article-author {
+  display: flex; align-items: center;
+  gap: 20px; margin-bottom: 40px;
+}
+
+.article-author-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--accent); flex-shrink: 0;
+  overflow: hidden;
+}
+
+.article-author-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.article-author-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 700;
+}
+
+.article-author-info p {
+  font-size: 0.88rem; color: var(--muted);
+}
+
+.article-nav {
+  display: flex; justify-content: space-between;
+  gap: 20px;
+}
+
+.article-nav a {
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none; color: var(--ink);
+  transition: all 0.25s; flex: 1;
+}
+
+.article-nav a:hover {
+  border-color: var(--accent);
+  background: rgba(139,37,0,0.02);
+}
+
+.article-nav-label {
+  font-size: 0.78rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  font-weight: 600; margin-bottom: 4px;
+}
+
+.article-nav-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 700; line-height: 1.3;
+}
+
+.article-nav .next { text-align: right; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px; text-align: center;
+}
+
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+
+.footer-social {
+  display: flex; justify-content: center;
+  gap: 24px; margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none; transition: all 0.3s; font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light); color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p { font-size: 0.85rem; line-height: 1.6; }
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* Animations */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.7s ease forwards;
+}
+.fade-in-delay { animation-delay: 0.15s; }
+.fade-in-delay-2 { animation-delay: 0.3s; }
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .article-header h1 { font-size: 2.2rem; }
+  .article-cover { height: 220px; margin: 36px 20px; }
+  .article-cover-text { font-size: 1.2rem; bottom: 24px; left: 24px; right: 24px; }
+}
+
+@media (max-width: 640px) {
+  .article-header { padding: 100px 20px 0; }
+  .article-body { padding: 0 20px 60px; }
+  .article-end { padding: 0 20px 60px; }
+  .article-header h1 { font-size: 1.9rem; }
+  .article-cover { height: 180px; }
+  .article-cover-text { font-size: 1rem; bottom: 20px; left: 20px; right: 20px; }
+  .article-body p { font-size: 1rem; }
+  .article-body h2 { font-size: 1.5rem; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  nav.menu-open .nav-links {
+    display: flex; flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .article-nav { flex-direction: column; }
+  .article-nav .next { text-align: left; }
+  .article-meta { flex-wrap: wrap; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../research.html">Research</a></li>
+      <li><a href="../publications.html">Publications</a></li>
+      <li><a href="../cv.html">CV</a></li>
+      <li><a href="../blog.html" class="active">Blog</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── ARTICLE HEADER ─── -->
+<header class="article-header fade-in">
+  <a href="../blog.html" class="article-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    Back to all posts
+  </a>
+  <span class="article-tag">Tutorial</span>
+  <h1>Density Functional Theory: A Gentle Introduction for Beginners</h1>
+  <div class="article-meta">
+    <span class="article-meta-item">Minh-Hieu Nguyen</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">May 2026</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">25 min read</span>
+  </div>
+</header>
+
+<!-- ─── COVER ─── -->
+<div class="article-cover fade-in fade-in-delay">
+  <div class="article-cover-pattern"></div>
+  <div class="article-cover-text">"The ground-state energy is a functional of the electron density alone." &mdash; Hohenberg &amp; Kohn, 1964</div>
+</div>
+
+<!-- ─── ARTICLE BODY ─── -->
+<article class="article-body fade-in fade-in-delay-2">
+
+  <p>Density Functional Theory — or DFT, as everyone calls it — is the workhorse of modern computational physics and chemistry. It is behind virtually every first-principles calculation you will encounter: predicting crystal structures, designing new catalysts, understanding magnetic materials, engineering band gaps in semiconductors. If quantum mechanics is the law of the land, DFT is the practical tool that lets us actually enforce that law for real systems with hundreds or thousands of electrons. This article is written for someone who knows the Schrödinger equation, has survived a quantum mechanics course, and now wants to understand what DFT is, why it works, and how to start using it — without drowning in formalism.</p>
+
+  <h2>1. The Problem: Why Can't We Just Solve the Schrödinger Equation?</h2>
+
+  <p>Let us begin with the honest truth. In principle, everything about a system of electrons and nuclei is contained in the many-body Schrödinger equation:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Many-Body Schrödinger Equation</span>
+    $$\hat{H}\,\Psi(\mathbf{r}_1, \mathbf{r}_2, \ldots, \mathbf{r}_N) = E\,\Psi(\mathbf{r}_1, \mathbf{r}_2, \ldots, \mathbf{r}_N)$$
+  </div>
+
+  <p>Here \(\Psi\) is the many-body wavefunction — a mathematical object that depends on the coordinates of all \(N\) electrons simultaneously. For a single electron, \(\Psi\) lives in three-dimensional space (three variables: \(x, y, z\)). For two electrons, it lives in six dimensions. For \(N\) electrons, it requires \(3N\) variables. This is what physicists call the <strong>exponential wall</strong>.</p>
+
+  <p>To appreciate the scale of this catastrophe, consider a modest molecule like caffeine, which has 102 electrons. The wavefunction is a function of 306 spatial variables. If you tried to store it on a numerical grid with just 10 points per dimension, you would need \(10^{306}\) numbers. For reference, the observable universe contains roughly \(10^{80}\) atoms. You would need more storage than the number of atoms in \(10^{226}\) copies of the universe. This is not an engineering problem that faster computers will solve — it is a fundamental barrier.</p>
+
+  <div class="insight-box">
+    <strong>💡 Key Insight</strong>
+    <p>The many-body wavefunction contains far more information than we usually need. For most physical properties — total energy, forces, electron distribution — we only need to know <em>where</em> the electrons are on average, not the correlations among all their positions simultaneously. This observation is the seed of DFT.</p>
+  </div>
+
+  <p>So we need a smarter approach. We need to find a way to capture the essential physics without tracking every single electron-electron correlation in \(3N\) dimensions. This is exactly what DFT provides.</p>
+
+  <h2>2. The Big Idea: Electron Density Instead of Wavefunctions</h2>
+
+  <p>The central insight of DFT is deceptively simple: instead of working with the wavefunction \(\Psi(\mathbf{r}_1, \ldots, \mathbf{r}_N)\), work with the <strong>electron density</strong> \(n(\mathbf{r})\). The electron density is just a function of three spatial variables — it tells you how many electrons you expect to find per unit volume at position \(\mathbf{r}\). No matter whether your system has 2 electrons or 2,000, the density is always a function in three-dimensional space.</p>
+
+  <p>But here is the question: is the density enough? Don't we lose information by collapsing the wavefunction down to a density? The revolutionary answer came from Pierre Hohenberg and Walter Kohn in 1964, in the form of two theorems that laid the foundation for all of DFT.</p>
+
+  <p><strong>The First Hohenberg–Kohn Theorem</strong> states that the external potential \(V_\text{ext}(\mathbf{r})\) — and hence the total energy and all ground-state properties — is uniquely determined by the ground-state electron density \(n(\mathbf{r})\). In plain language: if you know the electron density, you know <em>everything</em> about the ground state. Two different systems cannot have the same ground-state density unless they have the same external potential (up to a constant).</p>
+
+  <p><strong>The Second Hohenberg–Kohn Theorem</strong> establishes a variational principle: the true ground-state density is the one that minimizes the total energy <strong>functional</strong>. Before we go further, let us define that word. A <strong>functional</strong> is simply a rule that takes a function as input and returns a number. For example, the integral \(\int n(\mathbf{r})\,d\mathbf{r} = N\) is a functional of \(n(\mathbf{r})\) — it maps the density function to the total number of electrons. In DFT, the total energy \(E[n]\) is a functional of the density: give it a density, and it returns the energy.</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Hohenberg–Kohn Energy Functional</span>
+    $$E[n] = T[n] + \int V_\text{ext}(\mathbf{r})\,n(\mathbf{r})\,d\mathbf{r} + E_\text{ee}[n]$$
+  </div>
+
+  <p>Here \(T[n]\) is the kinetic energy functional, \(V_\text{ext}\) is the external potential (typically the nuclear attraction), and \(E_\text{ee}[n]\) accounts for electron-electron interactions. The Hohenberg–Kohn theorems guarantee that the exact ground-state density minimizes this functional. The problem is that we do not know the exact forms of \(T[n]\) and \(E_\text{ee}[n]\) as explicit functionals of the density. This is where the Kohn–Sham trick enters the stage.</p>
+
+  <div class="insight-box">
+    <strong>💡 Key Insight</strong>
+    <p>The Hohenberg–Kohn theorems are existence proofs — they guarantee that the density determines everything, but they do not tell us how to compute the energy from the density in practice. The practical machinery comes from Kohn and Sham.</p>
+  </div>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>3. The Kohn–Sham Trick: Fake Non-Interacting Electrons</h2>
+
+  <p>In 1965, Walter Kohn and Lu Jeu Sham introduced the idea that makes DFT actually work. Their strategy is clever: replace the real system of interacting electrons with a fictitious system of <strong>non-interacting electrons</strong> that, by construction, has the exact same ground-state density as the real system. These fictitious electrons each obey their own single-particle Schrödinger equation — the <strong>Kohn–Sham equations</strong>:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Kohn–Sham Equations</span>
+    $$\left[-\frac{\hbar^2}{2m}\nabla^2 + V_\text{ext}(\mathbf{r}) + V_H(\mathbf{r}) + V_{xc}(\mathbf{r})\right]\phi_i(\mathbf{r}) = \varepsilon_i\,\phi_i(\mathbf{r})$$
+  </div>
+
+  <p>Each \(\phi_i(\mathbf{r})\) is a <strong>Kohn–Sham orbital</strong> — a single-particle wavefunction for one of the fictitious non-interacting electrons. The density is then reconstructed as \(n(\mathbf{r}) = \sum_i |\phi_i(\mathbf{r})|^2\). Let us unpack each potential term.</p>
+
+  <p><strong>The external potential \(V_\text{ext}(\mathbf{r})\)</strong> describes the attraction between electrons and nuclei. For the water molecule H<sub>2</sub>O, with an oxygen nucleus (charge \(Z = 8\)) at position \(\mathbf{R}_O\) and two hydrogen nuclei (\(Z = 1\)) at positions \(\mathbf{R}_{H_1}\) and \(\mathbf{R}_{H_2}\), it takes the explicit form:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">External Potential for H₂O</span>
+    $$V_\text{ext}(\mathbf{r}) = -\frac{8e^2}{|\mathbf{r} - \mathbf{R}_O|} - \frac{e^2}{|\mathbf{r} - \mathbf{R}_{H_1}|} - \frac{e^2}{|\mathbf{r} - \mathbf{R}_{H_2}|}$$
+  </div>
+
+  <p>This is the Coulomb attraction that an electron at position \(\mathbf{r}\) feels from all three nuclei. Nothing approximate here — this term is exact.</p>
+
+  <p><strong>The Hartree potential \(V_H(\mathbf{r})\)</strong> captures the classical electrostatic repulsion among electrons. Imagine standing at a point \(\mathbf{r}\) (the "observer" point) and feeling the electrostatic potential created by the entire electron cloud:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Hartree Potential</span>
+    $$V_H(\mathbf{r}) = e^2 \int \frac{n(\mathbf{r}')}{|\mathbf{r} - \mathbf{r}'|}\,d\mathbf{r}'$$
+  </div>
+
+  <p>Here \(\mathbf{r}'\) is the "source" point — a dummy integration variable that sweeps over all positions where electron density exists. This integral simply adds up the Coulomb repulsion from every infinitesimal chunk of electron density. Like \(V_\text{ext}\), the Hartree potential is exact. It treats the electron cloud as a smooth classical charge distribution.</p>
+
+  <p><strong>The exchange-correlation potential \(V_{xc}(\mathbf{r})\)</strong> is where all the magic — and all the difficulty — lives. It accounts for everything that is <em>not</em> captured by the non-interacting kinetic energy, the nuclear attraction, and the classical electron-electron repulsion. We will return to this critical term in the next section.</p>
+
+  <h3>The Self-Consistent Field (SCF) Loop</h3>
+
+  <p>Notice the chicken-and-egg problem: to solve the Kohn–Sham equations, you need the potentials \(V_H\) and \(V_{xc}\), which depend on the density \(n(\mathbf{r})\). But the density is constructed from the solutions \(\phi_i\) of the Kohn–Sham equations. The resolution is an iterative <strong>self-consistent field (SCF)</strong> procedure:</p>
+
+  <div class="step-box">
+    <span class="step-number">1</span>
+    <h4>Guess an Initial Density</h4>
+    <p>Start with a trial electron density — typically a superposition of atomic densities. This does not need to be accurate; it just needs to be reasonable enough to start the cycle.</p>
+  </div>
+
+  <div class="step-box">
+    <span class="step-number">2</span>
+    <h4>Build the Effective Potential</h4>
+    <p>From the trial density, compute \(V_H[n]\) and \(V_{xc}[n]\). Together with the known \(V_\text{ext}\), these define the total effective potential in the Kohn–Sham equations.</p>
+  </div>
+
+  <div class="step-box">
+    <span class="step-number">3</span>
+    <h4>Solve the Kohn–Sham Equations</h4>
+    <p>Diagonalize (or iteratively solve) the single-particle equations to obtain new orbitals \(\phi_i\) and eigenvalues \(\varepsilon_i\).</p>
+  </div>
+
+  <div class="step-box">
+    <span class="step-number">4</span>
+    <h4>Construct a New Density</h4>
+    <p>Build the new density from \(n(\mathbf{r}) = \sum_i |\phi_i(\mathbf{r})|^2\). Compare it with the input density. If they match within your convergence threshold, you have reached self-consistency. If not, mix the old and new densities and return to step 2.</p>
+  </div>
+
+  <p>When the loop converges, you have a self-consistent density and a set of Kohn–Sham eigenvalues. The total energy can be computed, forces on atoms can be extracted for geometry optimization or molecular dynamics, and band structures can be plotted.</p>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>4. The Million-Dollar Question: What Is \(V_{xc}\)?</h2>
+
+  <p>We have established that \(V_\text{ext}\) and \(V_H\) are exact and straightforward to compute. All the difficulty in DFT is concentrated in a single object: the <strong>exchange-correlation functional</strong> \(E_{xc}[n]\), whose functional derivative gives the exchange-correlation potential \(V_{xc}(\mathbf{r}) = \delta E_{xc}/\delta n(\mathbf{r})\). What does it contain?</p>
+
+  <p><strong>Exchange</strong> arises from the Pauli exclusion principle. Two electrons with the same spin cannot occupy the same point in space. This creates an "exchange hole" — a region of depleted density around each electron where same-spin electrons are less likely to be found. Exchange lowers the energy because it keeps same-spin electrons apart, reducing their mutual repulsion.</p>
+
+  <p><strong>Correlation</strong> captures everything else — the instantaneous avoidance between electrons due to their Coulomb repulsion, beyond what exchange already accounts for. While exchange is a purely quantum-mechanical effect (arising from the antisymmetry of the wavefunction), correlation is about the fact that electrons dynamically adjust their positions to minimize repulsion in a way that a single Slater determinant cannot describe.</p>
+
+  <div class="article-highlight">
+    <p>Finding the exact exchange-correlation functional is one of the grand challenges of theoretical physics and chemistry. If someone hands you the exact \(E_{xc}[n]\), you can solve the electronic structure problem exactly — the Kohn–Sham framework itself introduces no approximation. All the physics of electron-electron interaction is funneled into this single functional, and nobody knows its exact form for general systems.</p>
+  </div>
+
+  <p>It is instructive to compare with <strong>Hartree–Fock (HF)</strong> theory, which many students encounter first. HF includes exchange <em>exactly</em> (by using an antisymmetrized Slater determinant) but misses correlation <em>entirely</em>. DFT, on the other hand, approximates <em>both</em> exchange and correlation through \(V_{xc}\). One of the surprising successes of DFT is that even crude approximations to \(V_{xc}\) often outperform HF in practice, precisely because including some correlation — even approximately — matters more than getting exchange exactly right.</p>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>5. Climbing Jacob's Ladder: A Tour of Exchange-Correlation Functionals</h2>
+
+  <p>In 2001, John Perdew proposed an elegant metaphor for organizing exchange-correlation functionals: <strong>Jacob's Ladder</strong>, inspired by the biblical image of a ladder reaching from Earth to Heaven. Each rung adds more information about the electron density and, ideally, brings you closer to chemical accuracy. Let us climb it.</p>
+
+  <h3>5.1 &nbsp; Rung 1 — LDA: The Local Density Approximation</h3>
+
+  <p>The oldest and simplest approximation makes a bold assumption: at each point in space, pretend that the electron density is locally uniform — as if the electrons at position \(\mathbf{r}\) belong to a <strong>uniform electron gas (jellium)</strong> with the same density \(n(\mathbf{r})\). Despite this seemingly drastic simplification, LDA works remarkably well for many solid-state systems.</p>
+
+  <p>The exchange energy in LDA follows the Dirac formula (1930):</p>
+
+  <div class="equation-box">
+    <span class="eq-label">LDA Exchange Energy (Dirac)</span>
+    $$E_x^\text{LDA}[n] = -C_x \int n(\mathbf{r})^{4/3}\,d\mathbf{r}, \qquad C_x = \frac{3}{4}\left(\frac{3}{\pi}\right)^{1/3}$$
+  </div>
+
+  <p>The exchange potential is obtained by taking the functional derivative: \(V_x^\text{LDA}(\mathbf{r}) = \delta E_x^\text{LDA}/\delta n = -\frac{4}{3}\,C_x\,n(\mathbf{r})^{1/3}\). Notice how it depends only on the density at the local point \(\mathbf{r}\) — hence "local."</p>
+
+  <p>For the correlation part, no analytic formula exists even for the uniform gas. Instead, the correlation energy of jellium was computed to high accuracy using <strong>quantum Monte Carlo simulations</strong> by Ceperley and Alder (1980), and then parametrized into usable analytic forms — the most widely used being the VWN (Vosko–Wilk–Nusair) and PW (Perdew–Wang) parametrizations.</p>
+
+  <p>LDA tends to overbind molecules (predicting bond energies that are too large) and underestimates lattice constants slightly, but for metals and simple solids, it remains a surprisingly good starting point.</p>
+
+  <h3>5.2 &nbsp; Rung 2 — GGA: Generalized Gradient Approximation</h3>
+
+  <p>Real electron densities are not uniform — they vary rapidly near nuclei, in chemical bonds, and at surfaces. The <strong>Generalized Gradient Approximation (GGA)</strong> accounts for this by including not just the density \(n(\mathbf{r})\) but also its gradient \(\nabla n(\mathbf{r})\). The exchange-correlation energy takes the general form:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">GGA Exchange-Correlation</span>
+    $$E_{xc}^\text{GGA}[n] = \int n(\mathbf{r})\,\epsilon_{xc}\!\left(n(\mathbf{r}),\,|\nabla n(\mathbf{r})|\right)\,d\mathbf{r}$$
+  </div>
+
+  <p>The most popular GGA functional is <strong>PBE</strong> (Perdew–Burke–Ernzerhof, 1996), which is constructed from exact constraints rather than empirical fitting — a philosophically appealing feature. Another widely used variant is <strong>BLYP</strong> (Becke exchange + Lee–Yang–Parr correlation), which was historically important in quantum chemistry.</p>
+
+  <p>GGA significantly improves molecular geometries and bond energies compared to LDA, and it is the default workhorse for solid-state calculations in codes like VASP and Quantum ESPRESSO.</p>
+
+  <h3>5.3 &nbsp; Rung 3 — meta-GGA</h3>
+
+  <p>The next rung adds the <strong>kinetic energy density</strong> \(\tau(\mathbf{r}) = \frac{1}{2}\sum_i |\nabla \phi_i(\mathbf{r})|^2\) to the ingredient list. This quantity carries information about the orbital character — it can distinguish between single bonds, double bonds, and lone pairs, which the density and its gradient alone cannot.</p>
+
+  <p>The most prominent meta-GGA is <strong>SCAN</strong> (Strongly Constrained and Appropriately Normed, Sun–Ruzsinszky–Perdew, 2015), which satisfies all 17 known exact constraints a meta-GGA can satisfy. Other notable examples include <strong>TPSS</strong> and the Minnesota functionals like <strong>M06-L</strong>.</p>
+
+  <p>Meta-GGAs offer improved accuracy for hydrogen bonds, van der Waals-like interactions (to some extent), and transition states. However, they can suffer from numerical instabilities and have trouble near nuclear cusps.</p>
+
+  <h3>5.4 &nbsp; Rung 4 — Hybrid Functionals</h3>
+
+  <p>This is where DFT borrows from wavefunction theory. <strong>Hybrid functionals</strong> mix a fraction of exact Hartree–Fock exchange with DFT exchange-correlation. The general idea:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">General Hybrid Form</span>
+    $$E_{xc}^\text{hybrid} = a\,E_x^\text{HF} + (1-a)\,E_x^\text{DFT} + E_c^\text{DFT}$$
+  </div>
+
+  <p>Why does mixing in HF exchange help? DFT exchange functionals suffer from <strong>self-interaction error</strong> — an electron spuriously repels itself through the Hartree potential, and the approximate \(V_{xc}\) does not fully cancel this. Exact HF exchange is self-interaction-free, so mixing it in partially corrects the problem.</p>
+
+  <p>The most famous hybrid is <strong>B3LYP</strong>, which has three empirical parameters fitted to experimental thermochemistry data. Starting from the LDA baseline, B3LYP adds corrections in three steps:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">B3LYP Exchange-Correlation</span>
+    $$E_{xc}^\text{B3LYP} = E_{xc}^\text{LDA} + a_0\,(E_x^\text{HF} - E_x^\text{LDA}) + a_x\,(E_x^\text{B88} - E_x^\text{LDA}) + a_c\,(E_c^\text{LYP} - E_c^\text{VWN})$$
+  </div>
+
+  <p>where \(a_0 = 0.20\), \(a_x = 0.72\), and \(a_c = 0.81\). The first correction blends in 20% HF exchange. The second adds Becke's gradient-corrected exchange (B88). The third adds the LYP correlation correction. These parameters were determined by Becke by fitting to a set of atomization energies, ionization potentials, and proton affinities.</p>
+
+  <p>Another prominent hybrid is <strong>PBE0</strong>, which mixes in exactly 25% HF exchange — a fraction motivated by perturbation theory arguments rather than empirical fitting. The Minnesota functional <strong>M06-2X</strong> pushes the HF fraction to 54%, making it particularly good for thermochemistry and noncovalent interactions.</p>
+
+  <div class="insight-box">
+    <strong>💡 Key Insight</strong>
+    <p>Hybrid functionals are more expensive than GGAs because computing HF exchange requires evaluating four-center integrals (in localized basis sets) or exact exchange in reciprocal space (in plane-wave codes). For periodic solids, this makes hybrids roughly an order of magnitude slower than PBE — which is why PBE remains the default for solid-state work.</p>
+  </div>
+
+  <h3>5.5 &nbsp; Rung 4.5 — Range-Separated Hybrids</h3>
+
+  <p>Standard hybrids use a constant fraction of HF exchange everywhere. But the physics suggests that DFT exchange works well at <em>short range</em> (where the exchange hole is compact and well-described by local approximations) while HF exchange is needed at <em>long range</em> (where the DFT exchange hole decays incorrectly).</p>
+
+  <p><strong>Range-separated hybrids (RSH)</strong> implement this insight by splitting the Coulomb operator into short-range and long-range parts using the error function:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Range Separation of Coulomb Operator</span>
+    $$\frac{1}{r} = \underbrace{\frac{\text{erfc}(\omega r)}{r}}_{\text{short-range (DFT)}} + \underbrace{\frac{\text{erf}(\omega r)}{r}}_{\text{long-range (HF)}}$$
+  </div>
+
+  <p>The parameter \(\omega\) controls the crossover distance. At short range (\(r \ll 1/\omega\)), DFT exchange dominates; at long range (\(r \gg 1/\omega\)), exact HF exchange takes over.</p>
+
+  <p>To understand why this matters, consider the hydrogen molecular ion H\(_2^+\) — just one electron and two protons. As the bond stretches to infinity, the electron must localize on one proton. Standard DFT functionals incorrectly predict fractional charges on both protons at large separations because of self-interaction error. Range-separated hybrids, with their correct long-range exchange, fix this pathology.</p>
+
+  <p>Important representatives include <strong>CAM-B3LYP</strong>, <strong>ωB97X-D</strong>, and <strong>LC-ωPBE</strong>. These functionals are essential for charge-transfer excitations, Rydberg states, and any property that depends on the long-range behavior of the exchange potential.</p>
+
+  <h3>5.6 &nbsp; Rung 5 — Double Hybrids</h3>
+
+  <p>At the top of the practical ladder sit the <strong>double hybrid functionals</strong>, which add a dose of wavefunction-based correlation — specifically, second-order Møller–Plesset (MP2) perturbation theory — on top of hybrid exchange:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Double Hybrid (B2PLYP)</span>
+    $$E_{xc}^\text{B2PLYP} = a_x\,E_x^\text{HF} + (1-a_x)\,E_x^\text{B88} + b\,E_c^\text{LYP} + (1-b)\,E_c^\text{MP2}$$
+  </div>
+
+  <p>with \(a_x = 0.53\) and \(b = 0.73\). The MP2 correlation component captures dispersion interactions and dynamic correlation effects that DFT correlation functionals typically miss. Double hybrids can approach the accuracy of coupled-cluster methods (CCSD) for thermochemistry of small molecules, but at a significantly lower computational cost.</p>
+
+  <p>The catch is the scaling. The MP2 correlation step requires evaluating virtual orbitals and scales as \(\mathcal{O}(N^5)\) — much steeper than lower-rung functionals:</p>
+
+  <div class="comparison-box">
+    <span class="box-label">📊 Computational Scaling Comparison</span>
+    <table class="article-table">
+      <tr>
+        <th>Functional Rung</th>
+        <th>Scaling</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td>LDA / GGA</td>
+        <td>\(\mathcal{O}(N^3)\)</td>
+        <td>PBE, BLYP</td>
+      </tr>
+      <tr>
+        <td>meta-GGA</td>
+        <td>\(\mathcal{O}(N^3)\)</td>
+        <td>SCAN, TPSS</td>
+      </tr>
+      <tr>
+        <td>Hybrid</td>
+        <td>\(\mathcal{O}(N^4)\)</td>
+        <td>B3LYP, PBE0</td>
+      </tr>
+      <tr>
+        <td>Double Hybrid</td>
+        <td>\(\mathcal{O}(N^5)\)</td>
+        <td>B2PLYP</td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>5.7 &nbsp; Beyond the Ladder — Machine-Learning Functionals</h3>
+
+  <p>An exciting frontier is the use of <strong>neural networks</strong> to learn the exchange-correlation functional directly from high-accuracy reference data (CCSD(T), quantum Monte Carlo). The idea is to train a neural network that takes the density (and its derivatives) as input and outputs the exchange-correlation energy density. Recent examples include the DeepMind DM21 functional and the MACE-based approaches.</p>
+
+  <p>This is still an active and rapidly evolving area of research. The promise is tantalizing — approaching chemical accuracy at GGA-like cost — but challenges remain in ensuring transferability, physical constraints, and size consistency. Stay tuned.</p>
+
+  <div class="article-pullquote">
+    DFT does not give you the exact answer — it gives you a useful answer for systems that would otherwise be completely intractable. That is its genius.
+  </div>
+
+  <h2>6. Practical Tips for Beginners</h2>
+
+  <p>You understand the theory. Now how do you actually choose a functional for your research problem? Here is a practical decision guide:</p>
+
+  <div class="flowchart">
+    <div class="flowchart-item">
+      <span class="flowchart-arrow">→</span>
+      <div class="flowchart-text"><strong>Solid-state band structure or bulk properties?</strong> Start with <strong>PBE</strong>. If you have strongly correlated \(d\)- or \(f\)-electrons, add a Hubbard correction: <strong>PBE+U</strong>.</div>
+    </div>
+    <div class="flowchart-item">
+      <span class="flowchart-arrow">→</span>
+      <div class="flowchart-text"><strong>Molecular thermochemistry (bond energies, reaction enthalpies)?</strong> Use <strong>B3LYP</strong> or <strong>ωB97X-D</strong>. These are the "safe defaults" for organic and main-group chemistry.</div>
+    </div>
+    <div class="flowchart-item">
+      <span class="flowchart-arrow">→</span>
+      <div class="flowchart-text"><strong>Weak interactions (van der Waals, π-stacking, physisorption)?</strong> Use a functional with dispersion corrections: <strong>ωB97X-D</strong>, or append <strong>-D3</strong> or <strong>-D4</strong> corrections (Grimme's DFT-D approach) to your favorite functional.</div>
+    </div>
+    <div class="flowchart-item">
+      <span class="flowchart-arrow">→</span>
+      <div class="flowchart-text"><strong>High-accuracy benchmarks for small molecules?</strong> Use a double hybrid like <strong>B2PLYP-D3</strong>, or validate against CCSD(T) if feasible.</div>
+    </div>
+    <div class="flowchart-item">
+      <span class="flowchart-arrow">→</span>
+      <div class="flowchart-text"><strong>Charge-transfer states, excited states?</strong> Use a range-separated hybrid like <strong>CAM-B3LYP</strong> or <strong>ωB97X-D</strong> within TD-DFT.</div>
+    </div>
+  </div>
+
+  <h3>Common Pitfalls</h3>
+
+  <div class="warning-box">
+    <strong>⚠ Pitfall #1: The Band Gap Problem</strong>
+    <p>LDA and GGA systematically underestimate band gaps — often by 30–50%. This is not a bug in your calculation; it is a fundamental limitation of these approximations. Hybrid functionals (HSE06) or many-body perturbation theory (GW) are needed for reliable band gaps.</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>⚠ Pitfall #2: Self-Interaction Error</strong>
+    <p>Standard DFT functionals do not fully cancel the spurious self-repulsion of an electron with itself. This leads to systematic errors: charge delocalization, wrong dissociation limits for charged species, and underestimated barriers. Be aware of this when studying reaction mechanisms or redox potentials.</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>⚠ Pitfall #3: Missing Dispersion</strong>
+    <p>LDA, GGA, and even hybrid functionals do not capture long-range van der Waals dispersion. If your system involves molecular crystals, layered materials, physisorption, or biological molecules, you <em>must</em> add dispersion corrections (-D3, -D4, or use a dispersion-aware functional like ωB97X-D). Otherwise your binding energies and intermolecular distances will be qualitatively wrong.</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>⚠ Pitfall #4: Trusting Kohn–Sham Eigenvalues Too Literally</strong>
+    <p>The KS eigenvalues \(\varepsilon_i\) are Lagrange multipliers from the variational procedure — they are <em>not</em> true quasiparticle energies (except for the highest occupied orbital, by Janak's theorem). The KS band structure is a useful approximation but should not be over-interpreted, especially for unoccupied states.</p>
+  </div>
+
+  <h3>Popular DFT Codes</h3>
+
+  <p>A brief orientation for newcomers looking to run their first calculations:</p>
+
+  <ul>
+    <li><strong>VASP</strong> (Vienna Ab initio Simulation Package) — plane-wave code with PAW pseudopotentials; the standard for periodic solid-state calculations. Commercial license required.</li>
+    <li><strong>Quantum ESPRESSO</strong> — open-source plane-wave code; excellent for solids, phonons, and electron-phonon coupling. Free and well-documented.</li>
+    <li><strong>Gaussian</strong> — Gaussian-type orbital code; the traditional workhorse for molecular quantum chemistry. Commercial license required.</li>
+    <li><strong>ORCA</strong> — versatile molecular code; free for academic use. Excellent for spectroscopy, excited states, and multireference calculations. Increasingly popular in the chemistry community.</li>
+  </ul>
+
+  <div class="insight-box">
+    <strong>💡 Key Insight</strong>
+    <p>The choice of code often matters less than the choice of functional, basis set, and convergence parameters. Spend your time understanding the physics, not fighting the software. Start with tutorials, reproduce published results, then apply to your own system.</p>
+  </div>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>7. What We Didn't Cover (and Where to Go Next)</h2>
+
+  <p>This article aimed to give you the conceptual foundation. There is much more to learn as you begin doing actual calculations:</p>
+
+  <ul>
+    <li><strong>Basis sets</strong> — the choice between plane waves (natural for periodic systems) and Gaussian-type orbitals (natural for molecules) fundamentally shapes how calculations are set up and converged.</li>
+    <li><strong>Pseudopotentials and PAW</strong> — core electrons are expensive to treat explicitly. Pseudopotentials replace the deep nuclear potential and core electrons with a smooth effective potential. The projector augmented wave (PAW) method by Blöchl (1994) provides a rigorous framework for this.</li>
+    <li><strong>Time-dependent DFT (TD-DFT)</strong> — extends DFT to excited states and optical properties. Essential for computing absorption spectra and excitation energies.</li>
+    <li><strong>DFT+U</strong> — adds an on-site Hubbard correction to treat strongly correlated \(d\)- and \(f\)-electrons. Critical for transition metal oxides, rare-earth compounds, and Mott insulators.</li>
+  </ul>
+
+  <p>For further reading, these references are excellent starting points:</p>
+
+  <ol>
+    <li>R. M. Martin, <em>Electronic Structure: Basic Theory and Practical Methods</em> (Cambridge University Press, 2004) — the definitive textbook for solid-state DFT.</li>
+    <li>W. Koch and M. C. Holthausen, <em>A Chemist's Guide to Density Functional Theory</em> (Wiley-VCH, 2001) — accessible and focused on molecular applications.</li>
+    <li>K. Burke, <em>The ABC of DFT</em> (online lecture notes, UC Irvine) — freely available, informal, and wonderfully clear.</li>
+    <li>The original papers: P. Hohenberg and W. Kohn, <em>Phys. Rev.</em> <strong>136</strong>, B864 (1964); W. Kohn and L. J. Sham, <em>Phys. Rev.</em> <strong>140</strong>, A1133 (1965).</li>
+  </ol>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>Conclusion</h2>
+
+  <p>Density Functional Theory is one of the most successful ideas in theoretical physics. It transforms the impossible \(3N\)-dimensional many-body problem into a tractable set of single-particle equations, at the cost of one unknown functional — the exchange-correlation energy. The entire field is, in a sense, a decades-long quest to approximate this functional as accurately as possible, from the heroic simplicity of LDA to the data-driven ambitions of machine-learning functionals.</p>
+
+  <p>What makes DFT special is not that it gives exact answers — it does not. What makes it special is that it gives useful, quantitative answers for systems that would be completely intractable with any other method. It predicts crystal structures, reaction pathways, magnetic properties, spectroscopic signatures, and materials behavior with an accuracy that routinely agrees with experiment. And the field is far from finished. New functionals, new algorithms, and new applications are published every week. If you are just starting out, you are joining one of the most active and impactful areas of computational science.</p>
+
+  <p>Welcome to DFT. The ladder is tall, but the view from each rung is worth the climb.</p>
+
+</article>
+
+<!-- ─── ARTICLE FOOTER ─── -->
+<div class="article-end">
+  <div class="article-end-divider"></div>
+
+  <div class="article-author">
+    <div class="article-author-avatar">
+      <img src="../images/profile.jpg" alt="Minh-Hieu Nguyen"
+           onerror="this.style.display='none'; this.parentElement.textContent='MH';">
+    </div>
+    <div class="article-author-info">
+      <h4>Minh-Hieu Nguyen</h4>
+      <p>Researcher at VNU-University of Engineering and Technology. Specializing in magnetocaloric materials, critical phenomena, and computational materials science.</p>
+    </div>
+  </div>
+
+  <div class="article-nav">
+    <a href="arrott-plots-guide.html">
+      <div class="article-nav-label">&#8592; Previous</div>
+      <div class="article-nav-title">Understanding Arrott Plots</div>
+    </a>
+    <a href="building-a-nest.html" class="next">
+      <div class="article-nav-label">Next &#8594;</div>
+      <div class="article-nav-title">Building a Nest: My Desire for Marriage and Babies</div>
+    </a>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: May 2026</p>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+</script>
+</body>
+</html>
