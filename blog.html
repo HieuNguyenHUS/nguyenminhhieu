@@ -35,6 +35,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+p { text-align: justify; }
+
 /* ─── NAVIGATION (giống index.html) ─── */
 nav {
   position: fixed;
@@ -547,7 +549,7 @@ footer a:hover { color: white; }
     </p>
     <div class="blog-stats">
       <div class="blog-stat">
-        <span class="blog-stat-number" id="postCount">10</span>
+        <span class="blog-stat-number" id="postCount">11</span>
         <span class="blog-stat-label">Posts</span>
       </div>
       <div class="blog-stat">
@@ -571,6 +573,30 @@ footer a:hover { color: white; }
 
 <!-- ─── BLOG LIST ─── -->
 <div class="blog-list" id="blogList">
+
+  <!-- ═══ Post: PageRank Eigenvector ═══ -->
+<a href="posts/pagerank-eigenvector.html" class="blog-post" data-category="tutorial">
+  <div class="blog-post-thumb thumb-teal">
+    <div class="blog-post-thumb-pattern"></div>
+    <span class="blog-post-tag">Tutorial</span>
+  </div>
+  <div class="blog-post-content">
+    <div class="blog-post-meta">
+      <span class="blog-post-date">May 2026</span>
+      <span class="blog-post-reading">20 min read</span>
+    </div>
+    <h2 class="blog-post-title">The $25,000,000,000 Eigenvector: The Linear Algebra Behind Google</h2>
+    <p class="blog-post-excerpt">
+      How Larry Page and Sergey Brin turned a linear algebra concept into a $25 billion company.
+      From hyperlinks as votes and the random surfer model to the Perron–Frobenius theorem,
+      power iteration, and why PageRank is really just finding a dominant eigenvector.
+    </p>
+    <span class="blog-post-readmore">
+      Read full post
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </span>
+  </div>
+</a>
 
   <!-- ═══ Post: Neural Network Potentials Guide ═══ -->
 <a href="posts/nnp-guide.html" class="blog-post" data-category="research">

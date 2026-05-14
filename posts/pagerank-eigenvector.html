@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The $25,000,000,000 Eigenvector — Minh-Hieu Nguyen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- KaTeX for professional math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });"></script>
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --cream: #f3f0e8;
+  --accent: #8b2500;
+  --accent-light: #c4560a;
+  --muted: #6b6b7b;
+  --border: #d4d0c8;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --sage: #4a6741;
+  --gold: #b8860b;
+  --teal: #2a8b8b;
+  --teal-dark: #1a5c5c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 249, 246, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--ink); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+
+.nav-links a {
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color 0.25s; position: relative;
+}
+
+.nav-links a::after {
+  content: ''; position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent); transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; background: none; border: none; padding: 4px;
+}
+.hamburger span { width: 24px; height: 2px; background: var(--ink); transition: 0.3s; }
+
+/* ─── ARTICLE HEADER ─── */
+.article-header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 140px 40px 0;
+}
+
+.article-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--muted);
+  font-size: 0.88rem; font-weight: 600;
+  margin-bottom: 40px; transition: color 0.25s;
+}
+.article-back:hover { color: var(--accent); }
+.article-back svg { transition: transform 0.25s; }
+.article-back:hover svg { transform: translateX(-4px); }
+
+.article-tag {
+  display: inline-block;
+  padding: 4px 14px; border-radius: 4px;
+  font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(139,37,0,0.08); color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.article-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 700;
+  line-height: 1.15; letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.article-meta {
+  display: flex; align-items: center; gap: 20px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-meta-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; color: var(--muted);
+}
+
+.article-meta-divider {
+  width: 4px; height: 4px;
+  border-radius: 50%; background: var(--border);
+}
+
+/* ─── COVER ─── */
+.article-cover {
+  max-width: 720px;
+  margin: 48px auto;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #0d2e2e 0%, #1a5c5c 40%, #2a8b8b 100%);
+}
+
+.article-cover-pattern {
+  position: absolute; inset: 0;
+  opacity: 0.08;
+  background-image:
+    radial-gradient(circle at 15% 40%, white 1px, transparent 1px),
+    radial-gradient(circle at 85% 25%, white 1px, transparent 1px),
+    radial-gradient(circle at 50% 75%, white 1px, transparent 1px),
+    radial-gradient(circle at 30% 90%, white 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.article-cover-text {
+  position: absolute;
+  bottom: 36px; left: 36px; right: 36px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 600; font-style: italic;
+  color: rgba(255,255,255,0.7); line-height: 1.3;
+}
+
+/* ─── ARTICLE BODY ─── */
+.article-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+  text-align: justify;
+}
+
+.article-body p {
+  margin-bottom: 24px;
+  font-size: 1.06rem;
+  line-height: 1.9;
+  text-align: justify;
+}
+
+.article-body p:first-of-type::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem; float: left;
+  line-height: 0.75;
+  margin-right: 10px; margin-top: 8px;
+  color: var(--accent); font-weight: 700;
+}
+
+.article-body h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 700;
+  margin: 48px 0 20px;
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.article-body h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem; font-weight: 700;
+  margin: 36px 0 14px;
+  line-height: 1.3;
+  color: var(--ink);
+  text-align: left;
+}
+
+.article-body em { color: var(--muted); font-style: italic; }
+.article-body strong { color: var(--ink); font-weight: 700; }
+
+.article-body ul, .article-body ol {
+  margin: 0 0 24px 24px;
+  text-align: left;
+}
+
+.article-body li {
+  margin-bottom: 8px;
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.article-body li::marker {
+  color: var(--accent);
+}
+
+/* Highlight box */
+.article-highlight {
+  border-left: 3px solid var(--accent);
+  padding: 24px 28px;
+  margin: 36px 0;
+  background: var(--cream);
+  border-radius: 0 8px 8px 0;
+}
+
+.article-highlight p {
+  margin-bottom: 0 !important;
+  font-size: 1.02rem;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.8;
+}
+
+/* Separator */
+.article-separator {
+  text-align: center;
+  margin: 44px 0;
+  color: var(--border);
+  font-size: 1.4rem;
+  letter-spacing: 12px;
+}
+
+/* Pull quote */
+.article-pullquote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; font-style: italic;
+  color: var(--accent);
+  text-align: center;
+  padding: 36px 20px;
+  margin: 44px 0;
+  line-height: 1.4;
+  position: relative;
+}
+
+.article-pullquote::before,
+.article-pullquote::after {
+  content: ''; display: block;
+  width: 60px; height: 1.5px;
+  background: var(--accent);
+  margin: 0 auto 20px; opacity: 0.4;
+}
+.article-pullquote::after { margin: 20px auto 0; }
+
+/* Equation box — KaTeX aware */
+.equation-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin: 28px 0;
+  text-align: center;
+}
+
+.equation-box .eq-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+/* KaTeX display output inside equation-box */
+.equation-box .katex-display {
+  margin: 0;
+}
+
+/* Inline KaTeX — ensure it doesn't disrupt line-height */
+.katex { font-size: 1.05em; }
+
+/* Table */
+.article-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 28px 0;
+  font-size: 0.95rem;
+}
+
+.article-table th {
+  background: var(--cream);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
+}
+
+.article-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+}
+
+.article-table td:first-child {
+  text-align: left;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.article-table tr:hover td {
+  background: rgba(243,240,232,0.4);
+}
+
+/* Step box */
+.step-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+  margin: 28px 0;
+  position: relative;
+}
+
+.step-number {
+  position: absolute;
+  top: -14px; left: 24px;
+  background: var(--accent);
+  color: white;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 700;
+}
+
+.step-box h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700;
+  margin-bottom: 10px;
+  padding-top: 4px;
+}
+
+.step-box p {
+  margin-bottom: 12px !important;
+  font-size: 0.98rem;
+}
+
+/* Warning box */
+.warning-box {
+  background: #fff8f0;
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px;
+  margin: 28px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.warning-box strong {
+  color: var(--gold);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.warning-box p {
+  margin-bottom: 0 !important;
+  font-size: 0.98rem;
+}
+
+/* Insight box */
+.insight-box {
+  background: #f0f7f7;
+  border-left: 3px solid var(--teal);
+  padding: 20px 24px;
+  margin: 28px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.insight-box strong {
+  color: var(--teal-dark);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.insight-box p {
+  margin-bottom: 0 !important;
+  font-size: 0.98rem;
+}
+
+/* Comparison box */
+.comparison-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 28px 0;
+}
+
+.comparison-box h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.comparison-box p {
+  margin-bottom: 12px !important;
+  font-size: 0.98rem;
+}
+
+.comparison-box p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Lab box (From the Lab) */
+.lab-box {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 36px 0;
+  position: relative;
+}
+
+.lab-box::before {
+  content: '🔬';
+  position: absolute;
+  top: -14px; left: 20px;
+  background: var(--cream);
+  padding: 0 8px;
+  font-size: 1.1rem;
+}
+
+.lab-box .lab-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--sage);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.lab-box p {
+  margin-bottom: 10px !important;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.lab-box p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.lab-box a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(139,37,0,0.2);
+  transition: border-color 0.25s;
+}
+
+.lab-box a:hover {
+  border-color: var(--accent);
+}
+
+/* Code block */
+.code-block {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border-radius: 10px;
+  padding: 28px;
+  margin: 28px 0;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.code-block .comment { color: #6c7086; }
+.code-block .keyword { color: #cba6f7; }
+.code-block .string { color: #a6e3a1; }
+.code-block .function { color: #89b4fa; }
+.code-block .number { color: #fab387; }
+.code-block .operator { color: #89dceb; }
+
+.code-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* ─── ARTICLE FOOTER ─── */
+.article-end {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+}
+
+.article-end-divider {
+  height: 1px; background: var(--border);
+  margin-bottom: 40px;
+}
+
+.article-author {
+  display: flex; align-items: center;
+  gap: 20px; margin-bottom: 40px;
+}
+
+.article-author-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 700;
+  color: var(--accent); flex-shrink: 0;
+  overflow: hidden;
+}
+
+.article-author-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.article-author-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 700;
+}
+
+.article-author-info p {
+  font-size: 0.88rem; color: var(--muted);
+}
+
+.article-nav {
+  display: flex; justify-content: space-between;
+  gap: 20px;
+}
+
+.article-nav a {
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none; color: var(--ink);
+  transition: all 0.25s; flex: 1;
+}
+
+.article-nav a:hover {
+  border-color: var(--accent);
+  background: rgba(139,37,0,0.02);
+}
+
+.article-nav-label {
+  font-size: 0.78rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  font-weight: 600; margin-bottom: 4px;
+}
+
+.article-nav-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 700; line-height: 1.3;
+}
+
+.article-nav .next { text-align: right; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 40px; text-align: center;
+}
+
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+
+.footer-social {
+  display: flex; justify-content: center;
+  gap: 24px; margin-bottom: 24px;
+}
+
+.footer-social a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none; transition: all 0.3s; font-size: 0.9rem;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent-light); color: white;
+  background: rgba(139,37,0,0.3);
+}
+
+footer p { font-size: 0.85rem; line-height: 1.6; }
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* Animations */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.7s ease forwards;
+}
+.fade-in-delay { animation-delay: 0.15s; }
+.fade-in-delay-2 { animation-delay: 0.3s; }
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .article-header h1 { font-size: 2.2rem; }
+  .article-cover { height: 220px; margin: 36px 20px; }
+  .article-cover-text { font-size: 1.2rem; bottom: 24px; left: 24px; right: 24px; }
+}
+
+@media (max-width: 640px) {
+  .article-header { padding: 100px 20px 0; }
+  .article-body { padding: 0 20px 60px; }
+  .article-end { padding: 0 20px 60px; }
+  .article-header h1 { font-size: 1.9rem; }
+  .article-cover { height: 180px; }
+  .article-cover-text { font-size: 1rem; bottom: 20px; left: 20px; right: 20px; }
+  .article-body p { font-size: 1rem; }
+  .article-body h2 { font-size: 1.5rem; }
+  .nav-inner { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  nav.menu-open .nav-links {
+    display: flex; flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: var(--paper);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .article-nav { flex-direction: column; }
+  .article-nav .next { text-align: left; }
+  .article-meta { flex-wrap: wrap; gap: 12px; }
+  .code-block { padding: 16px; font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Minh<span>-</span>Hieu</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../research.html">Research</a></li>
+      <li><a href="../publications.html">Publications</a></li>
+      <li><a href="../cv.html">CV</a></li>
+      <li><a href="../blog.html" class="active">Blog</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── ARTICLE HEADER ─── -->
+<header class="article-header fade-in">
+  <a href="../blog.html" class="article-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    Back to all posts
+  </a>
+  <span class="article-tag">Tutorial</span>
+  <h1>The $25,000,000,000 Eigenvector — The Linear Algebra Behind Google</h1>
+  <div class="article-meta">
+    <span class="article-meta-item">Minh-Hieu Nguyen</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">May 2026</span>
+    <span class="article-meta-divider"></span>
+    <span class="article-meta-item">15 min read</span>
+  </div>
+</header>
+
+<!-- ─── COVER ─── -->
+<div class="article-cover fade-in fade-in-delay">
+  <div class="article-cover-pattern"></div>
+  <div class="article-cover-text">"The entire search empire is built on a single eigenvector."</div>
+</div>
+
+<!-- ─── ARTICLE BODY ─── -->
+<article class="article-body fade-in fade-in-delay-2">
+
+  <p>Back in 2021, when I was a second-year undergraduate and a member of the physics club at VNU University of Science, I stumbled upon a paper that changed the way I thought about linear algebra. It was titled "The $25,000,000,000 Eigenvector" by Kurt Bryan and Tanya Leise, published in <em>SIAM Review</em>. I presented it during a small club seminar, fumbling through the proofs on a whiteboard in a borrowed classroom. What captivated me then — and still does four years later — was one deceptively simple idea: that one of the most valuable technology companies ever built owed its existence to a single eigenvector problem. Not machine learning. Not deep neural networks. Just a matrix, an eigenvalue of one, and a convergent iteration. This post is my attempt to retell that story, with a bit more mathematical maturity and a physicist's eye for structure.</p>
+
+  <h2>1. The Democracy of the Web</h2>
+
+  <p>Before Google, search engines were, frankly, terrible. They ranked pages primarily by keyword density — how many times a search term appeared on a page, perhaps weighted by its position in headings or metadata. This approach was trivially easy to game. Stuff a page with invisible text repeating "cheap flights" a thousand times, and you would climb to the top of the results. The web of the late 1990s was drowning in spam, and no one had a principled way to separate signal from noise.</p>
+
+  <p>Larry Page and Sergey Brin's insight was disarmingly elegant: treat every hyperlink as a vote. If page \(A\) links to page \(B\), that link is an endorsement — a declaration that \(B\) has something worth reading. But not all votes are equal. A link from a highly cited, authoritative page should carry more weight than a link from a forgotten corner of the web. The New York Times pointing to your blog means more than a random spam page doing the same.</p>
+
+  <p>This sounds natural enough, but it immediately creates a circular definition. The importance of a page depends on the importance of pages that link to it, which in turn depend on the importance of pages that link to <em>them</em>, and so on forever. The question is: can we resolve this circularity? Can we assign a single, self-consistent importance score to every page on the web?</p>
+
+  <p>The answer, it turns out, is an eigenvector.</p>
+
+  <h2>2. Building the Link Matrix</h2>
+
+  <p>Let us make the problem concrete. Model the web as a directed graph: each page is a node, and each hyperlink is a directed edge from the linking page to the linked page. Suppose there are \(n\) pages in total. If page \(j\) contains \(n_j\) outgoing links, and one of them points to page \(k\), then page \(j\) contributes a fraction \(1/n_j\) of its importance to page \(k\). This is the "equal sharing" rule — a page distributes its vote evenly among all the pages it links to.</p>
+
+  <p>Write \(x_k\) for the importance score of page \(k\), and let \(L_k\) denote the set of pages that link <em>to</em> page \(k\). The self-consistency condition becomes:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Importance Score</span>
+    $$x_k = \sum_{j \in L_k} \frac{x_j}{n_j}$$
+  </div>
+
+  <p>This is a system of \(n\) linear equations in \(n\) unknowns. Define the \(n \times n\) matrix \(\mathbf{A}\) by</p>
+
+  $$A_{ij} = \begin{cases} 1/n_j & \text{if page } j \text{ links to page } i, \\ 0 & \text{otherwise.} \end{cases}$$
+
+  <p>Then the entire system collapses to a single matrix equation:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Eigenvector Equation</span>
+    $$\mathbf{A}\mathbf{x} = \mathbf{x}$$
+  </div>
+
+  <p>This is the equation \(\mathbf{A}\mathbf{x} = \lambda \mathbf{x}\) with \(\lambda = 1\). The importance vector \(\mathbf{x}\) is literally an eigenvector of the link matrix \(\mathbf{A}\) corresponding to eigenvalue 1.</p>
+
+  <p>Bryan and Leise illustrate this with a miniature web of four pages. The link structure gives rise to the matrix:</p>
+
+  $$\mathbf{A} = \begin{bmatrix} 0 & 0 & 0 & 1/2 \\ 1/3 & 0 & 0 & 0 \\ 1/3 & 1/2 & 0 & 1/2 \\ 1/3 & 1/2 & 1 & 0 \end{bmatrix}$$
+
+  <p>Solving \(\mathbf{A}\mathbf{x} = \mathbf{x}\), one obtains (up to normalization) \(\mathbf{x} = [12,\, 4,\, 9,\, 6]^T\). Page 1 is the most important — not because it has the most content, but because the link structure funnels the most "authority" toward it. The ranking emerges entirely from topology, not from anything written on the pages themselves.</p>
+
+  <h2>3. Two Shortcomings of the Naive Approach</h2>
+
+  <p>The formulation above is beautiful in its simplicity, but it breaks in two important ways when applied to the real web.</p>
+
+  <div class="warning-box">
+    <strong>&#9888; Problem 1 — The Disconnected Web</strong>
+    <p>The real web is not a single connected graph. It consists of many clusters — "islands" — with no links between them. When the link graph is disconnected, the matrix \(\mathbf{A}\) takes a block diagonal form, and the eigenspace associated with \(\lambda = 1\) can have dimension greater than one. Multiple linearly independent eigenvectors mean there is no unique ranking: you cannot compare pages on different islands because there is no common frame of reference. It is like trying to rank football teams that have never played each other, not even indirectly.</p>
+  </div>
+
+  <div class="warning-box">
+    <strong>&#9888; Problem 2 — Dangling Nodes</strong>
+    <p>A dangling node is a page with no outgoing links — a dead end. This could be a PDF, an image, or simply a page whose author never bothered to link anywhere. In our matrix, a dangling node produces a column of all zeros, because it distributes no importance at all. This means the column sums of \(\mathbf{A}\) are no longer all equal to 1 — the matrix is not column-stochastic. Without column-stochasticity, the eigenvalue 1 may not even exist, and the probabilistic interpretation collapses.</p>
+  </div>
+
+  <p>Both problems are structural: they arise not from errors in the data, but from the inherent topology of hyperlinked documents. Solving them requires modifying the matrix itself.</p>
+
+  <h2>4. Google's Fix — The Modified Matrix M</h2>
+
+  <p>Google's solution is one of those ideas so clean that it seems obvious in retrospect, yet it took genuine insight to propose. First, handle dangling nodes by replacing every all-zero column with the uniform vector \(1/n\) — effectively saying that a surfer who hits a dead end teleports randomly to any page on the web. Call the resulting matrix \(\hat{\mathbf{A}}\). Then blend \(\hat{\mathbf{A}}\) with a uniform "teleportation" matrix \(\mathbf{S}\), where every entry of \(\mathbf{S}\) is \(1/n\):</p>
+
+  <div class="equation-box">
+    <span class="eq-label">The Google Matrix</span>
+    $$\mathbf{M} = (1 - m)\,\hat{\mathbf{A}} + m\,\mathbf{S}, \quad m \approx 0.15$$
+  </div>
+
+  <p>The parameter \(m\) is called the damping factor (or teleportation probability). Its interpretation comes from the <strong>random surfer model</strong>: imagine a bored person clicking through the web. At each step, with probability \((1-m)\) they follow a randomly chosen link on the current page. With probability \(m\), they get bored and jump to a completely random page — any page on the entire web, with equal likelihood. The value \(m = 0.15\) was the one Google originally used, meaning the surfer follows links 85% of the time and teleports 15% of the time.</p>
+
+  <p>This simple modification has profound consequences for the matrix \(\mathbf{M}\):</p>
+
+  <ul>
+    <li>Every entry of \(\mathbf{M}\) is strictly positive (since the \(m\mathbf{S}\) term contributes \(m/n > 0\) to each entry).</li>
+    <li>\(\mathbf{M}\) is column-stochastic: each column sums to 1.</li>
+    <li>The eigenspace \(V_1(\mathbf{M})\) is guaranteed to be one-dimensional — there is a unique ranking.</li>
+  </ul>
+
+  <div class="insight-box">
+    <strong>&#128161; Key Insight — Perron-Frobenius Theorem</strong>
+    <p>The guarantee that the ranking is unique comes from the <strong>Perron-Frobenius theorem</strong>: a square matrix with all entries strictly positive has a unique largest eigenvalue, and the corresponding eigenvector can be chosen to have all entries positive. Since \(\mathbf{M}\) is both positive and column-stochastic, its largest eigenvalue is exactly 1, and the corresponding eigenvector — the PageRank vector — is unique and has all positive entries. No ambiguity, no degeneracy, no multiple solutions. This is one of the most elegant applications of Perron-Frobenius in all of applied mathematics.</p>
+  </div>
+
+  <div class="lab-box">
+    <span class="lab-label">From the Lab</span>
+    <p><strong>Bryan, K. &amp; Leise, T.</strong> (2006). "The $25,000,000,000 Eigenvector: The Linear Algebra Behind Google." <em>SIAM Review</em>, 48(3), 569–581. <a href="https://doi.org/10.1137/050623280">DOI: 10.1137/050623280</a></p>
+    <p><strong>Brin, S. &amp; Page, L.</strong> (1998). "The anatomy of a large-scale hypertextual web search engine." <em>Computer Networks and ISDN Systems</em>, 30(1–7), 107–117.</p>
+  </div>
+
+  <h2>5. Why \(V_1(\mathbf{M})\) Is One-Dimensional — The Math</h2>
+
+  <p>The claim that the PageRank vector is unique rests on three results that Bryan and Leise present with admirable clarity. Here they are, distilled to their essential content.</p>
+
+  <div class="step-box">
+    <div class="step-number">1</div>
+    <h4>Proposition 1 — Every Column-Stochastic Matrix Has Eigenvalue 1</h4>
+    <p>If every column of \(\mathbf{M}\) sums to 1, let \(\mathbf{e} = [1, 1, \ldots, 1]^T\). Then \(\mathbf{M}^T \mathbf{e} = \mathbf{e}\), because the row sums of \(\mathbf{M}^T\) are the column sums of \(\mathbf{M}\). So \(\lambda = 1\) is an eigenvalue of \(\mathbf{M}^T\), and since a matrix and its transpose share the same eigenvalues, \(\lambda = 1\) is also an eigenvalue of \(\mathbf{M}\). The eigenvector exists — the question is whether it is unique.</p>
+  </div>
+
+  <div class="step-box">
+    <div class="step-number">2</div>
+    <h4>Proposition 2 — Positivity Forces Uniform Sign</h4>
+    <p>Suppose \(\mathbf{M}\) has all entries strictly positive and is column-stochastic. If \(\mathbf{q}\) is an eigenvector with \(\mathbf{M}\mathbf{q} = \mathbf{q}\), then all entries of \(\mathbf{q}\) must have the same sign. The proof uses the triangle inequality: take \(\|\mathbf{q}\|_1 = \sum |q_i|\), and observe that \(\|\mathbf{M}\mathbf{q}\|_1 \leq \|\mathbf{q}\|_1\) for any column-stochastic matrix. But if \(\mathbf{q}\) has entries of mixed sign and \(\mathbf{M}\) is strictly positive, the inequality becomes strict — a contradiction with \(\mathbf{M}\mathbf{q} = \mathbf{q}\). Therefore no mixed-sign eigenvector can exist in \(V_1(\mathbf{M})\).</p>
+  </div>
+
+  <div class="step-box">
+    <div class="step-number">3</div>
+    <h4>Lemma — The Eigenspace Is One-Dimensional</h4>
+    <p>Suppose for contradiction that \(\dim(V_1(\mathbf{M})) \geq 2\). Then there exist two linearly independent eigenvectors \(\mathbf{q}_1\) and \(\mathbf{q}_2\), both with all entries of the same sign (by Proposition 2). We may assume both are positive. But then the combination \(\mathbf{q}_1 - c\,\mathbf{q}_2\) for a suitable scalar \(c > 0\) produces an eigenvector with at least one zero entry and entries of mixed sign — contradicting Proposition 2. Therefore \(\dim(V_1(\mathbf{M})) = 1\), and the PageRank vector is unique up to normalization.</p>
+  </div>
+
+  <p>Three short arguments, each building on the last, and together they lock down the entire theoretical foundation of PageRank. The beauty of this chain is its economy — no heavy functional analysis, no spectral theory beyond the basics, just careful reasoning with inequalities and linear independence.</p>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>6. Computing PageRank — The Power Method</h2>
+
+  <p>Knowing that a unique eigenvector exists is one thing. Computing it for a web of billions of pages is another entirely. As of 2024, Google indexes roughly 8 billion pages. The matrix \(\mathbf{M}\) is therefore \(8 \times 10^9 \times 8 \times 10^9\) — far too large to diagonalize, decompose, or even store as a dense matrix. Direct eigenvalue solvers are out of the question.</p>
+
+  <p>The method Google used (and, in spirit, still uses) is the <strong>power method</strong> — arguably the simplest iterative algorithm in all of numerical linear algebra. Start with any initial vector \(\mathbf{x}_0\) (say, the uniform distribution \(x_0^{(i)} = 1/n\)) and repeatedly multiply by the matrix:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Power Iteration</span>
+    $$\mathbf{x}_{k+1} = \mathbf{M}\,\mathbf{x}_k$$
+  </div>
+
+  <p>Under the conditions satisfied by \(\mathbf{M}\) — positive, column-stochastic, with a dominant eigenvalue of 1 — the iterates \(\mathbf{x}_k\) converge to the unique eigenvector \(\mathbf{q}\). The convergence rate is governed by the ratio of the second-largest eigenvalue to the largest. For the Google matrix, this can be bounded:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Convergence Bound</span>
+    $$\|\mathbf{M}^k \mathbf{x}_0 - \mathbf{q}\|_1 \leq c^k \|\mathbf{x}_0 - \mathbf{q}\|_1, \quad c \leq 1 - m = 0.85$$
+  </div>
+
+  <p>With \(m = 0.15\), the error shrinks by a factor of at least 0.85 per iteration. After 50 iterations, the error is reduced by a factor of \(0.85^{50} \approx 3 \times 10^{-4}\). After 100 iterations, it is below \(10^{-7}\). For a web-scale computation, 50–100 iterations is remarkably cheap.</p>
+
+  <p>But there is a crucial computational trick. Naively multiplying \(\mathbf{M}\mathbf{x}\) for a dense \(n \times n\) matrix costs \(O(n^2)\) operations — impossibly expensive when \(n\) is in the billions. The key observation is that \(\mathbf{M}\) is not actually stored as a dense matrix. Instead, the multiplication is decomposed:</p>
+
+  <div class="equation-box">
+    <span class="eq-label">Efficient Matrix-Vector Product</span>
+    $$\mathbf{M}\mathbf{x} = (1-m)\,\hat{\mathbf{A}}\mathbf{x} + m\,\mathbf{s}$$
+  </div>
+
+  <p>where \(\mathbf{s} = [1/n, \ldots, 1/n]^T\) is just a constant vector. The matrix \(\hat{\mathbf{A}}\) is <em>sparse</em> — each column has only as many nonzero entries as the corresponding page has outgoing links, typically a few dozen. So the product \(\hat{\mathbf{A}}\mathbf{x}\) costs only \(O(\text{number of links})\) operations, not \(O(n^2)\). The dense \(m\mathbf{S}\mathbf{x}\) term reduces to the scalar \(m/n\) added to every entry. Each iteration is linear in the number of hyperlinks, which is entirely feasible even for billions of pages.</p>
+
+  <p>To see the convergence in action, Bryan and Leise work through a 5-page example network. Starting from the uniform distribution, the iterates stabilize within about 60 steps to four decimal places:</p>
+
+  <table class="article-table">
+    <thead>
+      <tr>
+        <th>Iteration</th>
+        <th>Page 1</th>
+        <th>Page 2</th>
+        <th>Page 3</th>
+        <th>Page 4</th>
+        <th>Page 5</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>\(k=0\)</td>
+        <td>0.2000</td>
+        <td>0.2000</td>
+        <td>0.2000</td>
+        <td>0.2000</td>
+        <td>0.2000</td>
+      </tr>
+      <tr>
+        <td>\(k=1\)</td>
+        <td>0.2300</td>
+        <td>0.1700</td>
+        <td>0.1700</td>
+        <td>0.2300</td>
+        <td>0.2000</td>
+      </tr>
+      <tr>
+        <td>\(k=10\)</td>
+        <td>0.2015</td>
+        <td>0.1802</td>
+        <td>0.1260</td>
+        <td>0.2878</td>
+        <td>0.2045</td>
+      </tr>
+      <tr>
+        <td>\(k=\infty\)</td>
+        <td>0.2018</td>
+        <td>0.1799</td>
+        <td>0.1266</td>
+        <td>0.2873</td>
+        <td>0.2044</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Page 4 wins — it accumulates the most authority from the network topology. And the convergence is rapid, exactly as the bound predicts.</p>
+
+  <h2>7. The Probabilistic Interpretation</h2>
+
+  <p>There is a second, equally illuminating way to read the PageRank equation. The vector \(\mathbf{q}\) is not just an eigenvector — it is the <strong>stationary distribution</strong> of a Markov chain.</p>
+
+  <p>Think of the random surfer as a particle hopping between states (pages) according to the transition probabilities encoded in \(\mathbf{M}\). The entry \(q_j\) gives the long-run fraction of time the surfer spends on page \(j\). No matter where the surfer starts, after enough steps the probability of being on page \(j\) converges to \(q_j\). The system "forgets" its initial condition.</p>
+
+  <div class="insight-box">
+    <strong>&#128161; A Physicist's Analogy</strong>
+    <p>To a physicist, this is immediately familiar. The convergence of the random surfer to a stationary distribution is exactly analogous to a thermodynamic system relaxing to equilibrium. The pages are microstates. The links define the transition rates. The teleportation term plays the role of a heat bath, ensuring ergodicity — that the system can reach any state from any other state. And the stationary distribution \(\mathbf{q}\) is the equilibrium distribution, the one that maximizes an appropriate entropy. The power method is the system evolving in time until memory of its initial configuration has been erased. In statistical mechanics, we call this mixing. In Markov chain theory, the same concept goes by the name of ergodicity.</p>
+  </div>
+
+  <p>This dual identity — algebraic (eigenvector) and probabilistic (stationary distribution) — is what gives PageRank its power. The algebraic formulation yields rigorous uniqueness guarantees. The probabilistic formulation provides intuition and suggests computational methods. Together, they form a complete picture.</p>
+
+  <h2>8. Connections and Extensions</h2>
+
+  <div class="comparison-box">
+    <h4>PageRank vs. Sports Rankings</h4>
+    <p>The idea of ranking competitors via eigenvectors predates Google by decades. James Keener (1993) proposed a method for ranking American football teams based on head-to-head scores: construct a matrix \(\mathbf{A}\) from game results, find its dominant eigenvector, and use it as the ranking. The mathematical structure is identical — \(\mathbf{A}\mathbf{x} = \lambda\mathbf{x}\) — only the semantics of the matrix entries change. Links become game outcomes. PageRank and sports ranking are two instances of the same underlying mathematical problem.</p>
+  </div>
+
+  <div class="comparison-box">
+    <h4>The Markov Chain Perspective</h4>
+    <p>PageRank is, at its core, an application of Markov chain theory. The Google matrix \(\mathbf{M}\) defines an irreducible, aperiodic Markov chain on the state space of web pages. The Perron-Frobenius theorem guarantees a unique stationary distribution. The power method computes it. Every theorem about mixing times, convergence rates, and spectral gaps from the theory of finite Markov chains applies directly. This connection has inspired a rich body of work on "personalized PageRank," where the teleportation distribution is non-uniform, and on "topic-sensitive PageRank," where different surfer profiles produce different rankings.</p>
+  </div>
+
+  <div class="comparison-box">
+    <h4>Beyond PageRank</h4>
+    <p>Modern Google search relies on far more than PageRank alone. The introduction of machine learning models — RankBrain (2015), BERT (2019), and more recently the MUM and Gemini architectures — means that relevance scoring now incorporates natural language understanding, user intent modeling, and real-time signals. But PageRank remains foundational: it solved the problem of measuring <em>authority</em> independently of <em>content</em>, and that distinction is still a pillar of information retrieval. The eigenvector might be one signal among hundreds today, but it was the signal that made web search work.</p>
+  </div>
+
+  <div class="article-separator">&#183; &#183; &#183;</div>
+
+  <h2>9. Closing Reflection</h2>
+
+  <p>When I first presented this paper in 2021, I was drawn to it for a reason I could not fully articulate. Something about the gap between the simplicity of the mathematics and the enormity of its consequences felt important — almost like a parable. A company worth tens of billions of dollars, a product used by billions of people, and at its origin, a system of linear equations and an eigenvalue of one.</p>
+
+  <p>Four years later, having spent time with density functional theory, neural network potentials, and the Hamiltonian eigenvalue problems that run through quantum mechanics, I recognize the deeper pattern. Linear algebra is not a toolbox. It is the grammar of structured relationships — between particles, between web pages, between anything that interacts in a network. The eigenvector does not "solve" Google's ranking problem any more than the Schrödinger equation "solves" the hydrogen atom. Rather, it reveals that the problem <em>has</em> a structure, and that the structure implies a unique, elegant answer.</p>
+
+  <div class="article-pullquote">
+    The elegance of PageRank is not that it uses a powerful algorithm. It is that the right question — "what is the self-consistent importance of every page on the web?" — turns out to have a mathematically inevitable answer.
+  </div>
+
+  <p>If you are a student encountering this for the first time, I encourage you to read the original paper by Bryan and Leise. It is freely available, beautifully written, and requires nothing beyond a first course in linear algebra. It is one of those rare papers that makes you feel like the authors are sitting across from you, explaining things over coffee. And it may just change how you think about the linear algebra course you are taking right now.</p>
+
+</article>
+
+<!-- ─── ARTICLE FOOTER ─── -->
+<div class="article-end">
+  <div class="article-end-divider"></div>
+
+  <div class="article-author">
+    <div class="article-author-avatar">
+      <img src="../images/profile.jpg" alt="Minh-Hieu Nguyen"
+           onerror="this.style.display='none'; this.parentElement.textContent='MH';">
+    </div>
+    <div class="article-author-info">
+      <h4>Minh-Hieu Nguyen</h4>
+      <p>Researcher at VNU-University of Engineering and Technology. Specializing in magnetocaloric materials, critical phenomena, and computational materials science.</p>
+    </div>
+  </div>
+
+  <div class="article-nav">
+    <a href="../blog.html">
+      <div class="article-nav-label">&#8592; All Posts</div>
+      <div class="article-nav-title">Back to Blog</div>
+    </a>
+    <a href="nnp-guide.html" class="next">
+      <div class="article-nav-label">Next &#8594;</div>
+      <div class="article-nav-title">Neural Network Potentials: Bridging Quantum Accuracy and Classical Speed</div>
+    </a>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://scholar.google.com/citations?user=QUdAPR8AAAAJ&hl=vi" title="Google Scholar">GS</a>
+      <a href="https://orcid.org/my-orcid?orcid=0009-0009-7243-8101" title="ORCID">ID</a>
+      <a href="https://www.researchgate.net/profile/Hieu-Nguyen-298" title="ResearchGate">RG</a>
+      <a href="https://www.linkedin.com/in/minh-hi%E1%BA%BFu-nguy%E1%BB%85n-29b676158/" title="LinkedIn">in</a>
+      <a href="https://github.com/HieuNguyenHUS" title="GitHub">GH</a>
+    </div>
+    <p>&copy; 2026 Minh-Hieu Nguyen. VNU-University of Engineering and Technology.</p>
+    <p style="margin-top:8px; font-size: 0.8rem;">Last updated: May 2026</p>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('menu-open');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => nav.classList.remove('menu-open'));
+});
+</script>
+</body>
+</html>
